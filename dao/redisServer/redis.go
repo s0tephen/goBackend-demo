@@ -16,7 +16,7 @@ func Init() {
 	global.Redis = redis.NewClient(&redis.Options{
 		Addr:     viper.GetString("redis.addr"),
 		Password: viper.GetString("redis.password"), // 没有密码，默认值
-		DB:       viper.GetInt("redis.db"),          // 默认DB 0
+		DB:       viper.GetInt("redis.db"),          // DB 1
 	})
 }
 
