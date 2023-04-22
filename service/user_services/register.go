@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"index_Demo/app/request"
+	"index_Demo/dao/redisServer"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
@@ -27,12 +28,22 @@ func Register(ctx *gin.Context) {
 	}
 
 	u := dal.User
-	user, _ := u.WithContext(ctx).Where(u.Username.Eq(regRequest.Username)).First()
+	user, _ := u.WithContext(ctx).Where(u.Uemail.Eq(regRequest.Email)).First()
 	if user != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("用户已存在", nil))
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("邮箱已存在", nil))
 		return
 	}
 
+	//从redis中获取验证码
+	code, err := redisServer.Get(regRequest.Email)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码已过期", err.Error()))
+		return
+	}
+	if regRequest.EmailCode != code {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码错误", nil))
+		return
+	}
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(regRequest.Password), 10)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("密码加密失败", err.Error()))
@@ -41,6 +52,7 @@ func Register(ctx *gin.Context) {
 
 	user = &model.User{
 		Username: regRequest.Username,
+		Uemail:   &regRequest.Email,
 		Password: string(hashPassword),
 		CreateAt: time.Now(),
 	}
@@ -50,6 +62,7 @@ func Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("注册失败", err.Error()))
 	}
 
+	//返回给前端的数据
 	type UserJson struct {
 		Username string    `json:"username"`
 		CreatAt  time.Time `json:"creat_at"`
