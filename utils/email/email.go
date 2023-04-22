@@ -7,7 +7,7 @@ import (
 	"net/smtp"
 )
 
-func TestSendMail(ToEmail string) error {
+func SendMail(ToEmail string) (*string, error) {
 	e := email.NewEmail()
 
 	mailUserName := "w2477284535@163.com" //邮箱账号
@@ -22,9 +22,9 @@ func TestSendMail(ToEmail string) error {
 	err := e.SendWithTLS("smtp.163.com:465", smtp.PlainAuth("", mailUserName, mailPassword, "smtp.163.com"),
 		&tls.Config{InsecureSkipVerify: true, ServerName: "smtp.163.com"})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return &code, nil
 }
 
 func RandCode() string {
