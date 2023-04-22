@@ -53,13 +53,14 @@ func Login(ctx *gin.Context) {
 
 	//生成token
 	tokenM := model.LoginSession{
-		Token:   text.GetUUID(),
-		UID:     userM.UID,
-		LoginIP: &loginIp,
+		Token:     text.GetUUID(),
+		UID:       userM.UID,
+		LoginTime: time.Now(),
+		LoginIP:   &loginIp,
 	}
 	loginSession := dal.LoginSession
 
-	//把token存入mysql
+	//把登陆信息token存入mysql
 	loginSession.WithContext(ctx).Create(&tokenM)
 
 	jsonM, _ := json.Marshal(userM)

@@ -22,6 +22,7 @@ func Router(g *gin.Engine) {
 	users := g.Group("/user")
 
 	{
+		users.POST("/regEmail", user_services.RegEmailCode)
 		users.POST("/register", user_services.Register)
 		users.POST("/login", user_services.Login)
 		users.POST("/logout", auth.Middleware(), user_services.Logout)

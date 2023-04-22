@@ -30,6 +30,7 @@ func newLoginSession(db *gorm.DB, opts ...gen.DOOption) loginSession {
 	_loginSession.ID = field.NewInt32(tableName, "id")
 	_loginSession.Token = field.NewString(tableName, "token")
 	_loginSession.UID = field.NewInt32(tableName, "uid")
+	_loginSession.LoginTime = field.NewTime(tableName, "login_time")
 	_loginSession.LoginIP = field.NewString(tableName, "login_ip")
 
 	_loginSession.fillFieldMap()
@@ -40,11 +41,12 @@ func newLoginSession(db *gorm.DB, opts ...gen.DOOption) loginSession {
 type loginSession struct {
 	loginSessionDo
 
-	ALL     field.Asterisk
-	ID      field.Int32  // token_Id
-	Token   field.String // 令牌
-	UID     field.Int32  // 用户ID
-	LoginIP field.String // 登陆IP
+	ALL       field.Asterisk
+	ID        field.Int32  // token_Id
+	Token     field.String // 令牌
+	UID       field.Int32  // 用户ID
+	LoginTime field.Time   // 登陆时间
+	LoginIP   field.String // 登陆IP
 
 	fieldMap map[string]field.Expr
 }
@@ -64,6 +66,7 @@ func (l *loginSession) updateTableName(table string) *loginSession {
 	l.ID = field.NewInt32(table, "id")
 	l.Token = field.NewString(table, "token")
 	l.UID = field.NewInt32(table, "uid")
+	l.LoginTime = field.NewTime(table, "login_time")
 	l.LoginIP = field.NewString(table, "login_ip")
 
 	l.fillFieldMap()
@@ -81,10 +84,11 @@ func (l *loginSession) GetFieldByName(fieldName string) (field.OrderExpr, bool) 
 }
 
 func (l *loginSession) fillFieldMap() {
-	l.fieldMap = make(map[string]field.Expr, 4)
+	l.fieldMap = make(map[string]field.Expr, 5)
 	l.fieldMap["id"] = l.ID
 	l.fieldMap["token"] = l.Token
 	l.fieldMap["uid"] = l.UID
+	l.fieldMap["login_time"] = l.LoginTime
 	l.fieldMap["login_ip"] = l.LoginIP
 }
 
