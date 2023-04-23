@@ -21,7 +21,6 @@ func Router(g *gin.Engine) {
 	g.Use(middleware.ErrorHandler())
 
 	users := g.Group("/user")
-
 	{
 		users.POST("/regEmail", user_services.RegEmailCode)
 		users.POST("/register", user_services.Register)

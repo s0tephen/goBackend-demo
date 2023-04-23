@@ -30,7 +30,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.UID = field.NewInt32(tableName, "uid")
 	_user.Username = field.NewString(tableName, "username")
 	_user.Uemail = field.NewString(tableName, "uemail")
-	_user.EmailCode = field.NewString(tableName, "email_code")
+	_user.IsAdmin = field.NewBool(tableName, "isAdmin")
 	_user.Password = field.NewString(tableName, "password")
 	_user.CreateAt = field.NewTime(tableName, "create_at")
 
@@ -42,13 +42,13 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 type user struct {
 	userDo
 
-	ALL       field.Asterisk
-	UID       field.Int32  // 用户ID
-	Username  field.String // 用户名
-	Uemail    field.String // 用户邮件
-	EmailCode field.String
-	Password  field.String // 密码
-	CreateAt  field.Time   // 创建时间
+	ALL      field.Asterisk
+	UID      field.Int32  // 用户ID
+	Username field.String // 用户名
+	Uemail   field.String // 用户邮件
+	IsAdmin  field.Bool   // 是否是管理
+	Password field.String // 密码
+	CreateAt field.Time   // 创建时间
 
 	fieldMap map[string]field.Expr
 }
@@ -68,7 +68,7 @@ func (u *user) updateTableName(table string) *user {
 	u.UID = field.NewInt32(table, "uid")
 	u.Username = field.NewString(table, "username")
 	u.Uemail = field.NewString(table, "uemail")
-	u.EmailCode = field.NewString(table, "email_code")
+	u.IsAdmin = field.NewBool(table, "isAdmin")
 	u.Password = field.NewString(table, "password")
 	u.CreateAt = field.NewTime(table, "create_at")
 
@@ -91,7 +91,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["uid"] = u.UID
 	u.fieldMap["username"] = u.Username
 	u.fieldMap["uemail"] = u.Uemail
-	u.fieldMap["email_code"] = u.EmailCode
+	u.fieldMap["isAdmin"] = u.IsAdmin
 	u.fieldMap["password"] = u.Password
 	u.fieldMap["create_at"] = u.CreateAt
 }
