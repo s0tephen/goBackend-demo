@@ -2,6 +2,7 @@ package redisServer
 
 import (
 	"context"
+	logs "github.com/danbai225/go-logs"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"index_Demo/bootstrap/global"
@@ -16,8 +17,15 @@ func Init() {
 	global.Redis = redis.NewClient(&redis.Options{
 		Addr:     viper.GetString("redis.addr"),
 		Password: viper.GetString("redis.password"), // 没有密码，默认值
-		DB:       viper.GetInt("redis.db"),          // DB 1
+		DB:       viper.GetInt("redis.db"),          // DB 2
 	})
+
+	_, err := global.Redis.Ping(RedisContext).Result()
+	if err != nil {
+		logs.Err("Redis:" + err.Error())
+	}
+
+	defer global.Redis.Close()
 }
 
 func Set(key string, value interface{}, expire time.Duration) error {
@@ -43,6 +51,7 @@ func PutSet(key string, members []string) error {
 	setAdd := global.Redis.SAdd(RedisContext, key, arr...)
 	return setAdd.Err()
 }
+
 func InSet(key, val string) (bool, error) {
 	set := global.Redis.SIsMember(RedisContext, key, val)
 	return set.Val(), set.Err()
