@@ -13,13 +13,13 @@ func SendMail(ToEmail string) (*string, error) {
 
 	mailUserName := viper.GetString("emailCode.seedEmail")    //邮箱账号
 	mailPassword := viper.GetString("emailCode.mailPassword") //邮箱授权码
-	code := RandCode()                                        //发送的验证码
 	Subject := viper.GetString("emailCode.seedSubject")       //发送的主题
 	addr := viper.GetString("emailCode.addr")
 	host := viper.GetString("emailCode.host")
 	serverName := viper.GetString("emailCode.Server")
-
+	code := RandCode() //发送的验证码
 	e.From = viper.GetString("emailCode.eFrom")
+
 	e.To = []string{ToEmail}
 	e.Subject = Subject
 	e.HTML = []byte("<p>你好！</p>你的验证码为：<h1>" + code + "</h1>" + "<p>***该验证码5分钟内有效***</p>")

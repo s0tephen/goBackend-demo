@@ -14,6 +14,7 @@ redis:
   db: 2
   tokenTime: 10
   emailTime: 5
+
 emailCode:
   seedEmail: w2477284535@163.com
   mailPassword: FBBUWAVMRDHYSNZC
@@ -22,5 +23,6 @@ emailCode:
   addr: smtp.163.com:465
   host: smtp.163.com
   Server: smtp.163.com
+
 jwt:
   tokenExpire: 10
