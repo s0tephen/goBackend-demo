@@ -16,7 +16,7 @@ type Pagination struct {
 	PageSize int   `json:"pageSize"`
 }
 
-func User(ctx *gin.Context) {
+func ViewUser(ctx *gin.Context) {
 	user := auth.CurrentUser(ctx)
 	var userSql model.User
 	u := dal.User
