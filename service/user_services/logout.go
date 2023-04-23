@@ -13,7 +13,7 @@ func Logout(ctx *gin.Context) {
 	u := dal.User
 	result, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID), u.Username.Eq(user.Username)).Delete()
 	if result.RowsAffected == 0 {
-		ctx.JSON(http.StatusServiceUnavailable, response.New("注销失败", nil))
+		ctx.JSON(http.StatusServiceUnavailable, response.New("注销失败 请联系管理员", nil))
 		return
 	}
 	ctx.JSON(http.StatusOK, response.New("注销成功", user.Username))

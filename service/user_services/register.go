@@ -28,9 +28,9 @@ func Register(ctx *gin.Context) {
 	}
 
 	u := dal.User
-	user, _ := u.WithContext(ctx).Where(u.Uemail.Eq(regRequest.Email)).First()
+	user, _ := u.WithContext(ctx).Where(u.Username.Eq(regRequest.Username)).First()
 	if user != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("邮箱已存在", nil))
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("用户名已存在", nil))
 		return
 	}
 

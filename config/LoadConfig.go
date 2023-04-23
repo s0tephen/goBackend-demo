@@ -24,6 +24,7 @@ type config struct {
 
 var Config = config{}
 
+// LoadConfig 使用os.ReadFile读取配置文件
 func LoadConfig() error {
 	file, err := os.ReadFile("config.json")
 	if err != nil {
@@ -37,6 +38,7 @@ func LoadConfig() error {
 	return nil
 }
 
+// InfoConfig 使用viper读取配置文件
 func InfoConfig() error {
 	viper.SetConfigName("application")
 	viper.SetConfigType("yaml")

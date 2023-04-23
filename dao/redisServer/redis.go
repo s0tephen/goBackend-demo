@@ -25,7 +25,6 @@ func Init() {
 		logs.Err("Redis:" + err.Error())
 	}
 
-	defer global.Redis.Close()
 }
 
 func Set(key string, value interface{}, expire time.Duration) error {

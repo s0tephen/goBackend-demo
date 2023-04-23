@@ -5,6 +5,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"index_Demo/docs"
+	"index_Demo/service/admin_services"
 	"index_Demo/service/bing_wallpaper"
 	"index_Demo/service/user_services"
 	"index_Demo/utils/middleware"
@@ -25,7 +26,14 @@ func Router(g *gin.Engine) {
 		users.POST("/regEmail", user_services.RegEmailCode)
 		users.POST("/register", user_services.Register)
 		users.POST("/login", user_services.Login)
-		users.POST("/logout", auth.Middleware(), user_services.Logout)
 		users.POST("/message", auth.Middleware(), user_services.Message)
+		users.POST("/feedback", auth.Middleware(), user_services.FeedBack)
+		users.POST("/logout", auth.Middleware(), user_services.Logout)
+
+	}
+
+	root := g.Group("/root")
+	{
+		root.Any("/user", auth.Middleware(), admin_services.User)
 	}
 }
