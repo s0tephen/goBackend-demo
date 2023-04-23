@@ -25,6 +25,3 @@ emailCode:
   addr: smtp.163.com:465
   host: smtp.163.com
   Server: smtp.163.com
-
-jwt:
-  tokenExpire: 10
