@@ -51,6 +51,5 @@ func ViewUser(ctx *gin.Context) {
 		"total":    pagination.Total,
 		"pageNum":  pagination.PageNum,
 		"pageSize": pagination.PageSize,
-		//"pages":    pagination.Total / int64(pagination.PageSize),
 	}))
 }
