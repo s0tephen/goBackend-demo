@@ -35,6 +35,7 @@ func ViewUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", nil))
 		return
 	}
+
 	if pagination.PageNum == 0 {
 		pagination.PageNum = 1
 	}
