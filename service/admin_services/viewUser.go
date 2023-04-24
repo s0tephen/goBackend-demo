@@ -25,14 +25,14 @@ func ViewUser(ctx *gin.Context) {
 	//查询数据库该用户是否为管理员
 	userInfo, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
 	if userInfo.IsAdmin == false {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("没有权限", nil))
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("Unauthorized", nil))
 		return
 	}
 
 	pagination := Pagination{}
 	err := ctx.BindJSON(&pagination)
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", nil))
 		return
 	}
 	if pagination.PageNum == 0 {
@@ -46,14 +46,10 @@ func ViewUser(ctx *gin.Context) {
 	}
 	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
 	db.Model(userSql).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("create_at desc").Find(&userSql)
-	ctx.JSON(200, gin.H{
-		"msg":  "查询成功",
-		"code": 200,
-		"data": gin.H{
-			"list":     userSql,
-			"total":    pagination.Total,
-			"pageNum":  pagination.PageNum,
-			"pageSize": pagination.PageSize,
-		},
-	})
+	ctx.JSON(http.StatusOK, response.New("查询成功", gin.H{
+		"list":     userSql,
+		"total":    pagination.Total,
+		"pageNum":  pagination.PageNum,
+		"pageSize": pagination.PageSize,
+	}))
 }

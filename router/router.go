@@ -33,6 +33,6 @@ func Router(g *gin.Engine) {
 
 	root := g.Group("/root")
 	{
-		root.Any("/user", auth.Middleware(), admin_services.ViewUser)
+		root.Any("/viewUser", auth.Middleware(), admin_services.ViewUser)
 	}
 }
