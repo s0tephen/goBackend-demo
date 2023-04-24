@@ -28,7 +28,6 @@ func ViewUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("Unauthorized", nil))
 		return
 	}
-
 	pagination := Pagination{}
 	err := ctx.BindJSON(&pagination)
 	if err != nil {
@@ -52,5 +51,6 @@ func ViewUser(ctx *gin.Context) {
 		"total":    pagination.Total,
 		"pageNum":  pagination.PageNum,
 		"pageSize": pagination.PageSize,
+		"pages":    pagination.Total / int64(pagination.PageSize),
 	}))
 }
