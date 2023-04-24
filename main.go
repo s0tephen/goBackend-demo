@@ -30,6 +30,7 @@ func main() {
 		logs.Err(err.Error())
 		return
 	}
+	//hahhahahahahahha
 	//连接redis
 	redisServer.Init()
 
