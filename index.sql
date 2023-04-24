@@ -14,9 +14,6 @@ create table user
 );
 
 
-
-
-
 -- auto-generated definition
 create table login_session
 (
