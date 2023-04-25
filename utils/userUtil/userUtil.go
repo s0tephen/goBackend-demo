@@ -37,6 +37,21 @@ func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
 	return users, pagination, nil
 }
 
+// QueryFdBack returns a list of feedback and pagination information
+func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
+	var fdBack []model.Feedback
+	db := mysql.DB.GetDb()
+	pagination := GetPagination(ctx)
+
+	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
+	db.Model(&fdBack).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("create_at desc").Find(&fdBack)
+	if err := db.Error; err != nil {
+		return nil, Pagination{}, nil
+	}
+
+	return fdBack, pagination, nil
+}
+
 func GetPagination(ctx *gin.Context) Pagination {
 	pagination := Pagination{}
 	if err := ctx.BindJSON(&pagination); err != nil {
