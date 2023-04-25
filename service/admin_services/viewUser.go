@@ -3,10 +3,9 @@ package admin_services
 import (
 	"github.com/gin-gonic/gin"
 	mysql "index_Demo/dao/mysql"
-	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
-	"index_Demo/utils/middleware/auth"
+	"index_Demo/utils/userUtil"
 	"net/http"
 )
 
@@ -16,41 +15,30 @@ type Pagination struct {
 	PageSize int   `json:"pageSize"`
 }
 
-func ViewUser(ctx *gin.Context) {
-	user := auth.CurrentUser(ctx)
-	var userSql model.User
-	u := dal.User
+func ViewUserList(ctx *gin.Context) {
+	var userSql []model.User
+	//u := dal.User
 	db := mysql.DB.GetDb()
 
 	//查询数据库该用户是否为管理员
-	userInfo, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
-	if userInfo.IsAdmin == false {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("Unauthorized", nil))
-		return
-	}
-	pagination := Pagination{}
-	err := ctx.BindJSON(&pagination)
-	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", nil))
+	if userUtil.IsAdmin(ctx) == true {
+		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 		return
 	}
 
-	if pagination.PageNum == 0 {
-		pagination.PageNum = 1
+	queryUsers, pagination, err := userUtil.QueryUsers(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
+		return
 	}
-	switch {
-	case pagination.PageSize > 100:
-		pagination.PageSize = 100
-	case pagination.PageSize <= 0:
-		pagination.PageSize = 10
-	}
+
 	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
 	db.Model(userSql).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("create_at desc").Find(&userSql)
 	ctx.JSON(http.StatusOK, response.New("查询成功", gin.H{
-		"list":     userSql,
+		"list":     queryUsers,
 		"total":    pagination.Total,
+		"pages":    pagination.Total / int64(pagination.PageSize),
 		"pageNum":  pagination.PageNum,
 		"pageSize": pagination.PageSize,
-		"pages":    pagination.Total / int64(pagination.PageSize),
 	}))
 }

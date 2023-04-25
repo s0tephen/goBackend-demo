@@ -15,7 +15,7 @@ type User struct {
 	UID      int32     `gorm:"column:uid;primaryKey;autoIncrement:true" json:"uid"`                  // 用户ID
 	Username string    `gorm:"column:username;not null" json:"username"`                             // 用户名
 	Uemail   *string   `gorm:"column:uemail" json:"uemail"`                                          // 用户邮件
-	IsAdmin  bool      `gorm:"column:isAdmin;not null" json:"isAdmin"`                               // 是否是管理
+	IsAdmin  bool      `gorm:"column:userUtil;not null" json:"userUtil"`                             // 是否是管理
 	Password string    `gorm:"column:password;not null" json:"password"`                             // 密码
 	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
 }
