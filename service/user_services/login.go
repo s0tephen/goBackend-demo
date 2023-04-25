@@ -77,8 +77,10 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.New("登陆成功", map[string]interface{}{
 		"loginIp":   loginIp,
 		"loginTime": time.Now(),
-		"token":     tokenM.Token,
-		"user":      userM.Username,
+		"user": gin.H{
+			"username": userM.Username,
+			"token":    tokenM.Token,
+		},
 		//"user":      userM,
 	}))
 }
