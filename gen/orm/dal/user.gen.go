@@ -30,7 +30,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.UID = field.NewInt32(tableName, "uid")
 	_user.Username = field.NewString(tableName, "username")
 	_user.Uemail = field.NewString(tableName, "uemail")
-	_user.IsAdmin = field.NewBool(tableName, "userUtil")
+	_user.IsAdmin = field.NewBool(tableName, "isAdmin")
 	_user.Password = field.NewString(tableName, "password")
 	_user.CreateAt = field.NewTime(tableName, "create_at")
 
@@ -68,7 +68,7 @@ func (u *user) updateTableName(table string) *user {
 	u.UID = field.NewInt32(table, "uid")
 	u.Username = field.NewString(table, "username")
 	u.Uemail = field.NewString(table, "uemail")
-	u.IsAdmin = field.NewBool(table, "userUtil")
+	u.IsAdmin = field.NewBool(table, "isAdmin")
 	u.Password = field.NewString(table, "password")
 	u.CreateAt = field.NewTime(table, "create_at")
 
@@ -91,7 +91,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["uid"] = u.UID
 	u.fieldMap["username"] = u.Username
 	u.fieldMap["uemail"] = u.Uemail
-	u.fieldMap["userUtil"] = u.IsAdmin
+	u.fieldMap["isAdmin"] = u.IsAdmin
 	u.fieldMap["password"] = u.Password
 	u.fieldMap["create_at"] = u.CreateAt
 }

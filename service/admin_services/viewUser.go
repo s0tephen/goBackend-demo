@@ -21,7 +21,7 @@ func ViewUserList(ctx *gin.Context) {
 	db := mysql.DB.GetDb()
 
 	//查询数据库该用户是否为管理员
-	if userUtil.IsAdmin(ctx) == true {
+	if !userUtil.IsAdmin(ctx) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 		return
 	}

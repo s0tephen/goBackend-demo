@@ -8,6 +8,7 @@ import (
 	"index_Demo/utils/middleware/auth"
 )
 
+// IsAdmin returns true if the user is an admin
 func IsAdmin(ctx *gin.Context) bool {
 	user := auth.CurrentUser(ctx)
 	u := dal.User
@@ -21,6 +22,7 @@ type Pagination struct {
 	PageSize int   `json:"pageSize"`
 }
 
+// QueryUsers returns a list of users and pagination information
 func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
 	var users []model.User
 	db := mysql.DB.GetDb()

@@ -13,7 +13,7 @@ redis:
   password:
   db: 2
   # 登陆 Token过期时间 单位 小时
-  tokenTime: 10
+  tokenTime: 1
   # 验证码过期时间 单位 分钟
   emailTime: 5
 
