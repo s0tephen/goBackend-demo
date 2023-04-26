@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"runtime"
+	"strings"
 )
 
 func Cors() gin.HandlerFunc {
@@ -53,5 +54,28 @@ func ErrorHandler() gin.HandlerFunc {
 			}
 		}()
 		c.Next()
+	}
+}
+
+func DeviceType() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userAgent := c.Request.UserAgent()
+		if strings.Contains(userAgent, "Mobile") {
+			c.Set("device_type", "mobile")
+		} else {
+			c.Set("device_type", "desktop")
+		}
+		c.Next()
+	}
+}
+
+func HandleDeviceType(c *gin.Context) {
+	deviceType, exists := c.Get("device_type")
+	if !exists {
+		c.String(500, "Failed to detect device type")
+	} else if deviceType == "mobile" {
+		c.String(200, "This is a mobile device")
+	} else {
+		c.String(200, "This is a desktop device")
 	}
 }

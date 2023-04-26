@@ -13,7 +13,6 @@ func ViewUserList(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 		return
 	}
-
 	queryUsers, pagination, err := userUtil.QueryUsers(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
