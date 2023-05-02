@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// ReviewFeedback 查询反馈
 func ReviewFeedback(ctx *gin.Context) {
 	if !userUtil.IsAdmin(ctx) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))

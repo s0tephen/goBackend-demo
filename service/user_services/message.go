@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Message 用户留言
 func Message(ctx *gin.Context) {
 	user := auth.CurrentUser(ctx)
 

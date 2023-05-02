@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// Logout 注销
 func Logout(ctx *gin.Context) {
 	user := auth.CurrentUser(ctx)
 	u := dal.User

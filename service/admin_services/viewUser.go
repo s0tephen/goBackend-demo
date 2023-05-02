@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// ViewUserList 查看用户列表
 func ViewUserList(ctx *gin.Context) {
 	//该用户是否为管理员
 	if !userUtil.IsAdmin(ctx) {

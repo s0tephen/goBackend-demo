@@ -19,6 +19,7 @@ import (
 	"time"
 )
 
+// Login 用户登录
 func Login(ctx *gin.Context) {
 	loginReq := request.LoginRequest{}
 	err := ctx.ShouldBindJSON(&loginReq)
@@ -54,10 +55,9 @@ func Login(ctx *gin.Context) {
 
 	//生成token
 	tokenM := model.LoginSession{
-		Token:     text.GetUUID(),
-		UID:       userM.UID,
-		LoginTime: time.Now(),
-		LoginIP:   &loginIp,
+		Token:   text.GetUUID(),
+		UID:     userM.UID,
+		LoginIP: &loginIp,
 	}
 	loginSession := dal.LoginSession
 
@@ -67,7 +67,7 @@ func Login(ctx *gin.Context) {
 	jsonM, _ := json.Marshal(userM)
 
 	//token存入redis
-	err = redisServer.Set(fmt.Sprintf("user_token_%s", tokenM.Token), string(jsonM), time.Duration(viper.GetInt("redis.tokenTime"))*time.Minute)
+	err = redisServer.Set(fmt.Sprintf("user_token_%s", tokenM.Token), string(jsonM), time.Duration(viper.GetInt("redis.tokenTime"))*time.Hour)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("登录失败（token生成失败) 请联系管理员", err.Error()))
 		return

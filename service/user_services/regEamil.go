@@ -15,6 +15,7 @@ type RegEmail struct {
 	Email string `json:"email" binding:"required"`
 }
 
+// RegEmailCode 注册邮箱验证码
 func RegEmailCode(ctx *gin.Context) {
 	regEmail := RegEmail{}
 	err := ctx.BindJSON(&regEmail)

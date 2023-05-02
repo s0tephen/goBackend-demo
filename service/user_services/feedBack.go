@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// FeedBack 用户反馈
 func FeedBack(ctx *gin.Context) {
 	user := auth.CurrentUser(ctx)
 	feedBackSql := dal.Feedback

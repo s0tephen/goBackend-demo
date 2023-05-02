@@ -52,6 +52,7 @@ func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
 	return fdBack, pagination, nil
 }
 
+// GetPagination returns the pagination information from the request body
 func GetPagination(ctx *gin.Context) Pagination {
 	pagination := Pagination{}
 	if err := ctx.BindJSON(&pagination); err != nil {

@@ -20,6 +20,7 @@ func Router(g *gin.Engine) {
 	g.Use(middleware.Cors())
 	g.Use(middleware.ErrorHandler())
 	g.Use(middleware.DeviceType())
+	g.GET("/showPost", user_services.ShowPost)
 
 	g.GET("/client", middleware.HandleDeviceType)
 	users := g.Group("/user")
@@ -30,11 +31,13 @@ func Router(g *gin.Engine) {
 		users.POST("/message", auth.Middleware(), user_services.Message)
 		users.POST("/feedback", auth.Middleware(), user_services.FeedBack)
 		users.POST("/logout", auth.Middleware(), user_services.Logout)
+
+		users.POST("/publish", auth.Middleware(), user_services.PublishPost)
 	}
 
 	root := g.Group("/root")
 	{
-		root.Any("/ViewUserList", auth.Middleware(), admin_services.ViewUserList)
+		root.GET("/ViewUserList", auth.Middleware(), admin_services.ViewUserList)
 		root.GET("/ReviewFeedback", auth.Middleware(), admin_services.ReviewFeedback)
 	}
 }
