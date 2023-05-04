@@ -2,7 +2,6 @@ package user_services
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/o1egl/govatar"
 	"index_Demo/app/request"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/response"
@@ -32,7 +31,6 @@ func Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("用户名已存在", nil))
 		return
 	}
-
 	code, err := services.GetCodeFromRedis(regRequest.Email)
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码已过期", err.Error()))
@@ -49,7 +47,7 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	avatar, err := userAvatar(1, regRequest.Username)
+	avatar, err := services.UserAvatar(1, regRequest.Username)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("生成头像失败", err.Error()))
 		return
@@ -59,7 +57,7 @@ func Register(ctx *gin.Context) {
 
 	err = services.SaveUser(user)
 	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("注册失败", err.Error()))
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("注册失败-请联系管理员", err.Error()))
 		return
 	}
 
@@ -68,41 +66,6 @@ func Register(ctx *gin.Context) {
 		CreatAt:  time.Now(),
 	}
 	ctx.JSON(http.StatusOK, response.New("注册成功", userJson))
-}
-
-// generateAvatarBase64 生成头像
-func userAvatar(uid govatar.Gender, uname string) (string, error) {
-	// 创建用户文件夹
-	err := os.MkdirAll("./static/images/"+uname+"/avatar", os.ModePerm)
-	if err != nil {
-		return "", err
-	}
-
-	err = govatar.GenerateFileForUsername(uid, uname, "./static/images/"+uname+"/avatar/"+uname+".png")
-	if err != nil {
-		return "", err
-	}
-
-	file, err := os.Open("./static/images/" + uname + "/avatar/" + uname + ".png")
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	// 获取文件信息
-	fileInfo, err := file.Stat()
-	if err != nil {
-		return "", err
-	}
-	// 读取文件内容
-	size := fileInfo.Size()
-	bytes := make([]byte, size)
-	_, err = file.Read(bytes)
-	if err != nil {
-		return "", err
-	}
-
-	return "./static/images/" + uname + "/avatar/" + uname + ".png", nil
 }
 
 func UpdateUserAvatar(ctx *gin.Context) {

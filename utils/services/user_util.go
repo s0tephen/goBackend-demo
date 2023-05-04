@@ -8,7 +8,7 @@ import (
 	"index_Demo/utils/middleware/auth"
 )
 
-// IsAdmin returns true if the user is an admin
+// IsAdmin 管理员权限验证
 func IsAdmin(ctx *gin.Context) bool {
 	user := auth.CurrentUser(ctx)
 	u := dal.User
@@ -22,7 +22,7 @@ type Pagination struct {
 	PageSize int   `json:"pageSize"`
 }
 
-// QueryUsers returns a list of users and pagination information
+// QueryUsers 返回用户列表和分页信息
 func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
 	var users []model.User
 	db := mysql.DB.GetDb()
@@ -37,7 +37,7 @@ func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
 	return users, pagination, nil
 }
 
-// QueryFdBack returns a list of feedback and pagination information
+// QueryFdBack 返回反馈列表和分页信息
 func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
 	var fdBack []model.Feedback
 	db := mysql.DB.GetDb()
@@ -52,7 +52,7 @@ func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
 	return fdBack, pagination, nil
 }
 
-// GetPagination returns the pagination information from the request body
+// GetPagination 返回请求体中的分页信息
 func GetPagination(ctx *gin.Context) Pagination {
 	pagination := Pagination{}
 	if err := ctx.BindJSON(&pagination); err != nil {

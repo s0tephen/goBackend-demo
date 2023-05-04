@@ -6,5 +6,5 @@ type LoginRequest struct {
 }
 
 type MessageRes struct {
-	Content string `json:"content" `
+	Content string `json:"content" binding:"required,min=3,max=255" required_msg:"留言内容不能为空" min_msg:"留言内容长度不能小于3" max_msg:"留言内容长度不能大于255"`
 }

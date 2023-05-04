@@ -6,6 +6,6 @@ import (
 )
 
 func GetUUID() string {
-	uuid := uuid.New()
-	return strings.ReplaceAll(uuid.String(), "-", "")
+	uuids := uuid.New()
+	return strings.ReplaceAll(uuids.String(), "-", "")
 }

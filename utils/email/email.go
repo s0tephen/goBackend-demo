@@ -10,7 +10,6 @@ import (
 
 func SendMail(ToEmail string) (*string, error) {
 	e := email.NewEmail()
-
 	mailUserName := viper.GetString("emailCode.seedEmail")    //邮箱账号
 	mailPassword := viper.GetString("emailCode.mailPassword") //邮箱授权码
 	Subject := viper.GetString("emailCode.seedSubject")       //发送的主题
