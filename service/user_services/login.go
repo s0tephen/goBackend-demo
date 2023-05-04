@@ -27,6 +27,31 @@ func Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
 		return
 	}
+
+	userM, tokenM, message, err := serverUtils.AuthenticateUser(ctx, &loginReq)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.New(message, err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response.New("登陆成功", map[string]interface{}{
+		"loginIp":   loginIp,
+		"loginTime": time.Now(),
+		"user": gin.H{
+			"username": userM.Username,
+			"token":    tokenM.Token,
+		},
+	}))
+}
+
+func Login4(ctx *gin.Context) {
+	loginReq := request.LoginRequest{}
+	err := ctx.ShouldBindJSON(&loginReq)
+	loginIp := serverUtils.GetRealIP(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
+		return
+	}
 	message, hasErr := validateUtils.ReturnValidateMessage(&loginReq, err)
 	if hasErr {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New(message, nil))

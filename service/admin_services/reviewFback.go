@@ -3,17 +3,17 @@ package admin_services
 import (
 	"github.com/gin-gonic/gin"
 	"index_Demo/gen/response"
-	"index_Demo/utils/userUtil"
+	"index_Demo/utils/services"
 	"net/http"
 )
 
 // ReviewFeedback 查询反馈
 func ReviewFeedback(ctx *gin.Context) {
-	if !userUtil.IsAdmin(ctx) {
+	if !services.IsAdmin(ctx) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 		return
 	}
-	QueryFdBack, pagination, err := userUtil.QueryFdBack(ctx)
+	QueryFdBack, pagination, err := services.QueryFdBack(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
 		return
