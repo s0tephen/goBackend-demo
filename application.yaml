@@ -2,15 +2,15 @@ server:
   port: 9990
 
 mysql:
-  host: 127.0.0.1
+  host: 110.41.128.19
   port: 3306
   user: root
-  password: 11223344
-  db: panDemo
+  password: mysql_hFkP5h
+  db: pandemo
 
 redis:
-  addr: 127.0.0.1:6379
-  password:
+  addr: 110.41.128.19:6363
+  password: jhkdjhkjdhsIUTYURTU_JKpmJP
   db: 0
   # 登陆 Token过期时间 单位 小时
   tokenTime: 1

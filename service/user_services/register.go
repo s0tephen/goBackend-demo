@@ -1,17 +1,15 @@
 package user_services
 
 import (
-	"bytes"
-	"encoding/base64"
 	"github.com/gin-gonic/gin"
 	"github.com/o1egl/govatar"
 	"golang.org/x/crypto/bcrypt"
-	"image/png"
 	"index_Demo/app/request"
 	"index_Demo/dao/redisServer"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
+	"index_Demo/utils/middleware/auth"
 	"index_Demo/utils/validateUtils"
 	"net/http"
 	"os"
@@ -88,39 +86,20 @@ func Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.New("注册成功", userJson))
 }
 
-func generateAvatarBase64(uId govatar.Gender) (string, error) {
-	avatar, err := govatar.Generate(uId)
-	if err != nil {
-		return "", err
-	}
-
-	var buf bytes.Buffer
-	err = png.Encode(&buf, avatar)
-	if err != nil {
-		return "", err
-	}
-
-	avatarBytes := buf.Bytes()
-	avatarBase64 := base64.StdEncoding.EncodeToString(avatarBytes)
-
-	return avatarBase64, nil
-}
-
+// generateAvatarBase64 生成头像
 func userAvatar(uid govatar.Gender, uname string) (string, error) {
 	// 创建用户文件夹
-	err := os.MkdirAll("./static/images/avatar/"+uname, os.ModePerm)
+	err := os.MkdirAll("./static/images/"+uname+"/avatar", os.ModePerm)
 	if err != nil {
 		return "", err
 	}
 
-	// 生成头像
-	err = govatar.GenerateFileForUsername(uid, uname, "./static/images/avatar/"+uname+"/"+uname+".png")
+	err = govatar.GenerateFileForUsername(uid, uname, "./static/images/"+uname+"/avatar/"+uname+".png")
 	if err != nil {
 		return "", err
 	}
 
-	// 打开生成的头像文件
-	file, err := os.Open("./static/images/avatar/" + uname + "/" + uname + ".png")
+	file, err := os.Open("./static/images/" + uname + "/avatar/" + uname + ".png")
 	if err != nil {
 		return "", err
 	}
@@ -131,7 +110,6 @@ func userAvatar(uid govatar.Gender, uname string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	// 读取文件内容
 	size := fileInfo.Size()
 	bytes := make([]byte, size)
@@ -140,6 +118,38 @@ func userAvatar(uid govatar.Gender, uname string) (string, error) {
 		return "", err
 	}
 
-	// 返回头像文件路径
-	return "./static/images/avatar/" + uname + "/" + uname + ".png", nil
+	return "./static/images/" + uname + "/avatar/" + uname + ".png", nil
+}
+
+func UpdateUserAvatar(ctx *gin.Context) {
+	user := auth.CurrentUser(ctx)
+	file, err := ctx.FormFile("avatar")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.New("无法获取头像文件", err.Error()))
+		return
+	}
+	// 删除旧头像
+	oldAvatarPath := "./static/images/" + user.Username + "/avatar/" + user.Username + ".png"
+	err = os.Remove(oldAvatarPath)
+	if err != nil && !os.IsNotExist(err) {
+		ctx.JSON(http.StatusInternalServerError, response.New("系统内部出错", err.Error()))
+		return
+	}
+	// 保存新头像
+	avatarPath := "./static/images/" + user.Username + "/avatar/" + user.Username + ".png"
+	err = ctx.SaveUploadedFile(file, avatarPath)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.New("无法获取头像文件", err.Error()))
+		return
+	}
+
+	//更新数据库中的头像路径 有点多余
+	u := dal.User
+	_, err = u.WithContext(ctx).Where(u.Username.Eq(user.Username)).Update(u.Avatar, avatarPath)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.New("无法获取头像路径", err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response.New("头像更新成功", nil))
 }

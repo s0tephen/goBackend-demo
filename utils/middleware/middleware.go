@@ -69,6 +69,7 @@ func DeviceType() gin.HandlerFunc {
 	}
 }
 
+// HandleDeviceType is a handler that returns a string
 func HandleDeviceType(c *gin.Context) {
 	deviceType, exists := c.Get("device_type")
 	if !exists {

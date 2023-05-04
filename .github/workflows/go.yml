@@ -1,47 +1,42 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go Backend Demo CI/CD
-
+name: Build and Test
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
-    branches:
-      - main
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.20.x]
+        platform: [ubuntu-latest, macos-latest, windows-latest,debian-latest]
+    runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Go
+      - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.20.2'
+          go-version: ${{ matrix.go-version }}
 
-      - name: Install dependencies
-        run: go mod download
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-      - name: Build and test
-        run: |
-          go build -o app
-          go test -v -race ./...
+      # - name: Testing
+      #   run: make test
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
+      - name: Build and publish
+        run: build_linux_amd64
+
+      - name: Publish to GitHub Releases
+        uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          context: .
-          push: true
-          tags: your-registry/your-image:latest
-
-      - name: Deploy to Kubernetes
-        uses: appleboy/kubectl-action@v1.2.0
-        with:
-          args: apply -f kubernetes/deployment.yaml
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          artifacts: "build/*"
+          token: all
+          releaseName: Release ${{ github.ref }}
+          releaseNotes: |
+            ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false

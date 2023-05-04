@@ -44,13 +44,13 @@ type post struct {
 	postDo
 
 	ALL      field.Asterisk
-	PID      field.Int32
-	Username field.String
-	PTitle   field.String
-	PCenter  field.String
-	PImg     field.String
-	PLabel   field.String
-	PTime    field.Time
+	PID      field.Int32  // 帖子id
+	Username field.String // 发布者
+	PTitle   field.String // 帖子标题
+	PCenter  field.String // 帖子内容
+	PImg     field.String // 帖子图片
+	PLabel   field.String // 帖子标签
+	PTime    field.Time   // 发布时间
 
 	fieldMap map[string]field.Expr
 }

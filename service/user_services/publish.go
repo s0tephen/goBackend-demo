@@ -20,14 +20,15 @@ func PublishPost(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("系统内部出错 请联系管理员", nil))
 		return
 	}
+
 	post := model.Post{
 		Username: &user.Username,
 		PTitle:   userPost.PTitle,
 		PCenter:  userPost.PCenter,
-		PImg:     userPost.PImg,
 		PLabel:   userPost.PLabel,
 		PTime:    time.Now(),
 	}
+
 	err = dal.Post.WithContext(ctx).Create(&post)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("发布失败", err.Error()))

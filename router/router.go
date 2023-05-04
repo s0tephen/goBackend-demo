@@ -7,6 +7,7 @@ import (
 	"index_Demo/docs"
 	"index_Demo/service/admin_services"
 	"index_Demo/service/bing_wallpaper"
+	"index_Demo/service/file_services"
 	"index_Demo/service/user_services"
 	"index_Demo/utils/middleware"
 	"index_Demo/utils/middleware/auth"
@@ -25,19 +26,21 @@ func Router(g *gin.Engine) {
 	g.GET("/client", middleware.HandleDeviceType)
 	users := g.Group("/user")
 	{
-		users.POST("/regEmail", user_services.RegEmailCode)
+		users.POST("/reg_email", user_services.RegEmailCode)
 		users.POST("/register", user_services.Register)
 		users.POST("/login", user_services.Login)
+		users.POST("/update_user_avatar", auth.Middleware(), user_services.UpdateUserAvatar)
 		users.POST("/message", auth.Middleware(), user_services.Message)
 		users.POST("/feedback", auth.Middleware(), user_services.FeedBack)
 		users.POST("/logout", auth.Middleware(), user_services.Logout)
 
 		users.POST("/publish", auth.Middleware(), user_services.PublishPost)
+		users.POST("/upload_file", auth.Middleware(), file_services.UploadFile)
 	}
 
 	root := g.Group("/root")
 	{
-		root.GET("/ViewUserList", auth.Middleware(), admin_services.ViewUserList)
-		root.GET("/ReviewFeedback", auth.Middleware(), admin_services.ReviewFeedback)
+		root.GET("/view_user_list", auth.Middleware(), admin_services.ViewUserList)
+		root.GET("/review_feedback", auth.Middleware(), admin_services.ReviewFeedback)
 	}
 }

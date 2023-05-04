@@ -14,8 +14,8 @@ const TableNameMessage = "message"
 type Message struct {
 	Mid      int32     `gorm:"column:mid;primaryKey;autoIncrement:true" json:"mid"`                  // 消息ID
 	Uname    *string   `gorm:"column:uname" json:"uname"`                                            // 用户名字
-	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
 	Content  *string   `gorm:"column:content" json:"content"`                                        // 消息内容
+	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
 }
 
 // TableName Message's table name

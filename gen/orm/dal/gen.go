@@ -19,6 +19,7 @@ var (
 	Q            = new(Query)
 	Category     *category
 	Feedback     *feedback
+	File         *file
 	Like         *like
 	LoginSession *loginSession
 	Message      *message
@@ -30,6 +31,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Category = &Q.Category
 	Feedback = &Q.Feedback
+	File = &Q.File
 	Like = &Q.Like
 	LoginSession = &Q.LoginSession
 	Message = &Q.Message
@@ -42,6 +44,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		db:           db,
 		Category:     newCategory(db, opts...),
 		Feedback:     newFeedback(db, opts...),
+		File:         newFile(db, opts...),
 		Like:         newLike(db, opts...),
 		LoginSession: newLoginSession(db, opts...),
 		Message:      newMessage(db, opts...),
@@ -55,6 +58,7 @@ type Query struct {
 
 	Category     category
 	Feedback     feedback
+	File         file
 	Like         like
 	LoginSession loginSession
 	Message      message
@@ -69,6 +73,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		db:           db,
 		Category:     q.Category.clone(db),
 		Feedback:     q.Feedback.clone(db),
+		File:         q.File.clone(db),
 		Like:         q.Like.clone(db),
 		LoginSession: q.LoginSession.clone(db),
 		Message:      q.Message.clone(db),
@@ -90,6 +95,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		db:           db,
 		Category:     q.Category.replaceDB(db),
 		Feedback:     q.Feedback.replaceDB(db),
+		File:         q.File.replaceDB(db),
 		Like:         q.Like.replaceDB(db),
 		LoginSession: q.LoginSession.replaceDB(db),
 		Message:      q.Message.replaceDB(db),
@@ -101,6 +107,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 type queryCtx struct {
 	Category     *categoryDo
 	Feedback     *feedbackDo
+	File         *fileDo
 	Like         *likeDo
 	LoginSession *loginSessionDo
 	Message      *messageDo
@@ -112,6 +119,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Category:     q.Category.WithContext(ctx),
 		Feedback:     q.Feedback.WithContext(ctx),
+		File:         q.File.WithContext(ctx),
 		Like:         q.Like.WithContext(ctx),
 		LoginSession: q.LoginSession.WithContext(ctx),
 		Message:      q.Message.WithContext(ctx),

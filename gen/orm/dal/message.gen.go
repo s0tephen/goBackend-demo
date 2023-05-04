@@ -29,8 +29,8 @@ func newMessage(db *gorm.DB, opts ...gen.DOOption) message {
 	_message.ALL = field.NewAsterisk(tableName)
 	_message.Mid = field.NewInt32(tableName, "mid")
 	_message.Uname = field.NewString(tableName, "uname")
-	_message.CreateAt = field.NewTime(tableName, "create_at")
 	_message.Content = field.NewString(tableName, "content")
+	_message.CreateAt = field.NewTime(tableName, "create_at")
 
 	_message.fillFieldMap()
 
@@ -43,8 +43,8 @@ type message struct {
 	ALL      field.Asterisk
 	Mid      field.Int32  // 消息ID
 	Uname    field.String // 用户名字
-	CreateAt field.Time   // 创建时间
 	Content  field.String // 消息内容
+	CreateAt field.Time   // 创建时间
 
 	fieldMap map[string]field.Expr
 }
@@ -63,8 +63,8 @@ func (m *message) updateTableName(table string) *message {
 	m.ALL = field.NewAsterisk(table)
 	m.Mid = field.NewInt32(table, "mid")
 	m.Uname = field.NewString(table, "uname")
-	m.CreateAt = field.NewTime(table, "create_at")
 	m.Content = field.NewString(table, "content")
+	m.CreateAt = field.NewTime(table, "create_at")
 
 	m.fillFieldMap()
 
@@ -84,8 +84,8 @@ func (m *message) fillFieldMap() {
 	m.fieldMap = make(map[string]field.Expr, 4)
 	m.fieldMap["mid"] = m.Mid
 	m.fieldMap["uname"] = m.Uname
-	m.fieldMap["create_at"] = m.CreateAt
 	m.fieldMap["content"] = m.Content
+	m.fieldMap["create_at"] = m.CreateAt
 }
 
 func (m message) clone(db *gorm.DB) message {

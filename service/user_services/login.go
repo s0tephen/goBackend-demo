@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	_ "golang.org/x/crypto/bcrypt"
 	"index_Demo/app/request"
@@ -67,7 +66,7 @@ func Login(ctx *gin.Context) {
 	jsonM, _ := json.Marshal(userM)
 
 	//token存入redis
-	err = redisServer.Set(fmt.Sprintf("user_token_%s", tokenM.Token), string(jsonM), time.Duration(viper.GetInt("redis.tokenTime"))*time.Hour)
+	err = redisServer.Set(fmt.Sprintf("user_token_%s", tokenM.Token), string(jsonM), 1*time.Hour)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("登录失败（token生成失败) 请联系管理员", err.Error()))
 		return
