@@ -19,7 +19,7 @@ redis:
 
 emailCode:
   seedEmail: w2477284535@163.com
-  mailPassword: FBBUWAVMRDHYSNZC
+  mailPassword: ""
   seedSubject: 验证码发送测试
   eFrom: 验证码测试 <w2477284535@163.com>
   addr: smtp.163.com:465
