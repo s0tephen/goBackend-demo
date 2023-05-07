@@ -22,6 +22,21 @@ type Pagination struct {
 	PageSize int   `json:"pageSize"`
 }
 
+// QueryPosts 获取分页信息
+func QueryPosts(ctx *gin.Context) ([]model.Post, Pagination, error) {
+	var posts []model.Post
+	db := mysql.DB.GetDb()
+	pagination := GetPagination(ctx)
+
+	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
+	db.Model(&posts).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("pTime desc").Find(&posts)
+	if err := db.Error; err != nil {
+		return nil, Pagination{}, nil
+	}
+
+	return posts, pagination, nil
+}
+
 // QueryUsers 返回用户列表和分页信息
 func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
 	var users []model.User

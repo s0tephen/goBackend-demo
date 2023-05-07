@@ -8,13 +8,6 @@
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="0@localhost" uuid="fd3d93eb-e773-44c3-b0ea-3309a395faf4">
-      <driver-ref>redis</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
-      <jdbc-url>jdbc:redis://localhost:6379/0</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
     <data-source source="LOCAL" name="@110.41.128.19" uuid="79c41579-2799-4f10-bbd5-78d53845df24">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>

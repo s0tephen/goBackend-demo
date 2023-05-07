@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Cors 跨域
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
@@ -42,6 +43,7 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
+// ErrorHandler 拦截报错
 func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {

@@ -5,12 +5,14 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"index_Demo/docs"
+	"index_Demo/gen/response"
 	"index_Demo/service/admin_services"
 	"index_Demo/service/bing_wallpaper"
 	"index_Demo/service/file_services"
 	"index_Demo/service/user_services"
 	"index_Demo/utils/middleware"
 	"index_Demo/utils/middleware/auth"
+	"net/http"
 )
 
 func Router(g *gin.Engine) {
@@ -18,12 +20,21 @@ func Router(g *gin.Engine) {
 	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	g.GET("/wallpaper", bing_wallpaper.Wallpaper)
 
+	g.NoMethod(func(ctx *gin.Context) {
+		ctx.JSON(http.StatusMethodNotAllowed, response.New("Method not allowed", nil))
+	})
+	g.NoRoute(func(ctx *gin.Context) {
+		ctx.JSON(http.StatusNotFound, response.New("404 Not found", nil))
+	})
 	g.Use(middleware.Cors())
 	g.Use(middleware.ErrorHandler())
 	g.Use(middleware.DeviceType())
-	g.GET("/showPost", user_services.ShowPost)
 
 	g.GET("/client", middleware.HandleDeviceType)
+
+	g.GET("/post_list", user_services.PostList)
+	g.GET("/post", user_services.PostDetail)
+
 	users := g.Group("/user")
 	{
 		users.POST("/reg_email", user_services.RegEmailCode)

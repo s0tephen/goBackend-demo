@@ -18,19 +18,18 @@ type RegEmail struct {
 // RegEmailCode 注册邮箱验证码
 func RegEmailCode(ctx *gin.Context) {
 	regEmail := RegEmail{}
-	err := ctx.BindJSON(&regEmail)
-	if err != nil {
+	if err := ctx.BindJSON(&regEmail); err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("系统出错联系管理员", err))
 		return
 	}
 	u := dal.User
-	user, _ := u.WithContext(ctx).Where(u.Uemail.Eq(regEmail.Email)).First()
-	if user != nil {
+	if user, _ := u.WithContext(ctx).Where(u.Uemail.Eq(regEmail.Email)).First(); user != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("邮箱已存在", nil))
 		return
 	}
+
 	code, emailErr := email.SendMail(regEmail.Email)
-	if err != nil {
+	if emailErr != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码发送失败 联系系统管理员", emailErr))
 		return
 	}

@@ -20,7 +20,7 @@ func GetRealIP(ctx *gin.Context) string {
 	//ctx.RemoteIP()
 }
 
-// AuthenticateUser 验证用户Log
+// AuthenticateUser 验证Log
 func AuthenticateUser(ctx *gin.Context, loginReq *request.LoginRequest) (*model.User, *model.LoginSession, string, error) {
 	u := dal.User
 	message, hasErr := validateUtils.ReturnValidateMessage(loginReq, nil)

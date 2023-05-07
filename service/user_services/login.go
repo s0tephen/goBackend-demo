@@ -21,9 +21,8 @@ import (
 // Login 用户登录
 func Login(ctx *gin.Context) {
 	loginReq := request.LoginRequest{}
-	err := ctx.ShouldBindJSON(&loginReq)
 	loginIp := serverUtils.GetRealIP(ctx)
-	if err != nil {
+	if err := ctx.ShouldBindJSON(&loginReq); err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
 		return
 	}

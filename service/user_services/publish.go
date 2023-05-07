@@ -6,10 +6,37 @@ import (
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
+	"index_Demo/utils/services"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+func PostList(ctx *gin.Context) {
+	queryPosts, pagination, err := services.QueryPosts(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
+		return
+	}
+	ctx.JSON(http.StatusOK, response.New("查询成功", gin.H{
+		"list":     queryPosts,
+		"total":    pagination.Total,
+		"pages":    pagination.Total / int64(pagination.PageSize),
+		"pageNum":  pagination.PageNum,
+		"pageSize": pagination.PageSize,
+	}))
+}
+
+// PostDetail 文章内容
+func PostDetail(ctx *gin.Context) {
+	postID := ctx.Query("id")
+	post, err := GetPostByID(ctx, postID)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "文章未找到"})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"post": post})
+}
 
 // PublishPost 发布
 func PublishPost(ctx *gin.Context) {
@@ -38,32 +65,17 @@ func PublishPost(ctx *gin.Context) {
 
 }
 
-// ShowPost 展示文章
-func ShowPost(ctx *gin.Context) {
-	postID := ctx.Param("id")
-	post, err := GetPostByID(postID)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "文章未找到"})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{"post": post})
-}
-
-func GetPostByID(id string) (*model.Post, error) {
-	// 根据文章ID从数据库或其他数据源查询文章信息的实现逻辑
+func GetPostByID(ctx *gin.Context, postId string) (*model.Post, error) {
 	p := dal.Post
 
-	postID, err := strconv.Atoi(id)
+	id, err := strconv.Atoi(postId)
 	if err != nil {
 		return nil, err
 	}
 
-	post, err := p.Where(p.PID.Eq(int32(postID))).First()
+	post, err := p.WithContext(ctx).Where(p.PID.Eq(int32(id))).First()
 	if err != nil {
 		return nil, err
 	}
-	// 假设在这里执行查询操作，将结果赋值给 post 变量
-	// 如果找不到文章，可以返回自定义的错误信息
-
 	return post, nil
 }
