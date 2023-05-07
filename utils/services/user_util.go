@@ -16,18 +16,11 @@ func IsAdmin(ctx *gin.Context) bool {
 	return userInfo.IsAdmin
 }
 
-type Pagination struct {
-	Total    int64 `json:"total"`
-	PageNum  int   `json:"pageNum"`
-	PageSize int   `json:"pageSize"`
-}
-
 // QueryPosts 获取分页信息
 func QueryPosts(ctx *gin.Context) ([]model.Post, Pagination, error) {
 	var posts []model.Post
 	db := mysql.DB.GetDb()
 	pagination := GetPagination(ctx)
-
 	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
 	db.Model(&posts).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("pTime desc").Find(&posts)
 	if err := db.Error; err != nil {
@@ -65,6 +58,12 @@ func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
 	}
 
 	return fdBack, pagination, nil
+}
+
+type Pagination struct {
+	Total    int64 `json:"total"`
+	PageNum  int   `json:"pageNum"`
+	PageSize int   `json:"pageSize"`
 }
 
 // GetPagination 返回请求体中的分页信息

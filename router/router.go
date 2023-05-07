@@ -6,10 +6,10 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"index_Demo/docs"
 	"index_Demo/gen/response"
-	"index_Demo/service/admin_services"
+	"index_Demo/service/admin"
 	"index_Demo/service/bing_wallpaper"
 	"index_Demo/service/file_services"
-	"index_Demo/service/user_services"
+	"index_Demo/service/user"
 	"index_Demo/utils/middleware"
 	"index_Demo/utils/middleware/auth"
 	"net/http"
@@ -32,26 +32,26 @@ func Router(g *gin.Engine) {
 
 	g.GET("/client", middleware.HandleDeviceType)
 
-	g.GET("/post_list", user_services.PostList)
-	g.GET("/post", user_services.PostDetail)
+	g.GET("/post_list", user.PostList)
+	g.GET("/post", user.PostDetail)
 
 	users := g.Group("/user")
 	{
-		users.POST("/reg_email", user_services.RegEmailCode)
-		users.POST("/register", user_services.Register)
-		users.POST("/login", user_services.Login)
-		users.POST("/update_user_avatar", auth.Middleware(), user_services.UpdateUserAvatar)
-		users.POST("/message", auth.Middleware(), user_services.Message)
-		users.POST("/feedback", auth.Middleware(), user_services.FeedBack)
-		users.POST("/logout", auth.Middleware(), user_services.Logout)
+		users.POST("/reg_email", user.RegEmailCode)
+		users.POST("/register", user.Register)
+		users.POST("/login", user.Login)
+		users.POST("/update_user_avatar", auth.Middleware(), user.UpdateUserAvatar)
+		users.POST("/message", auth.Middleware(), user.Message)
+		users.POST("/feedback", auth.Middleware(), user.FeedBack)
+		users.POST("/logout", auth.Middleware(), user.Logout)
 
-		users.POST("/publish", auth.Middleware(), user_services.PublishPost)
+		users.POST("/publish", auth.Middleware(), user.PublishPost)
 		users.POST("/upload_file", auth.Middleware(), file_services.UploadFile)
 	}
 
 	root := g.Group("/root")
 	{
-		root.GET("/view_user_list", auth.Middleware(), admin_services.ViewUserList)
-		root.GET("/review_feedback", auth.Middleware(), admin_services.ReviewFeedback)
+		root.GET("/view_user_list", auth.Middleware(), admin.ViewUserList)
+		root.GET("/review_feedback", auth.Middleware(), admin.ReviewFeedback)
 	}
 }
