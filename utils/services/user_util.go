@@ -2,9 +2,8 @@ package services
 
 import (
 	"github.com/gin-gonic/gin"
-	mysql "index_Demo/dao/mysql"
+	"gorm.io/gorm"
 	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/orm/model"
 	"index_Demo/utils/middleware/auth"
 )
 
@@ -16,48 +15,15 @@ func IsAdmin(ctx *gin.Context) bool {
 	return userInfo.IsAdmin
 }
 
-// QueryPosts 获取分页信息
-func QueryPosts(ctx *gin.Context) ([]model.Post, Pagination, error) {
-	var posts []model.Post
-	db := mysql.DB.GetDb()
+// Query 分页查询
+func Query(ctx *gin.Context, model interface{}, db *gorm.DB, order string) (interface{}, Pagination, error) {
 	pagination := GetPagination(ctx)
 	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
-	db.Model(&posts).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("pTime desc").Find(&posts)
-	if err := db.Error; err != nil {
-		return nil, Pagination{}, nil
+	err := db.Model(model).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order(order).Find(model).Error
+	if err != nil {
+		return nil, Pagination{}, err
 	}
-
-	return posts, pagination, nil
-}
-
-// QueryUsers 返回用户列表和分页信息
-func QueryUsers(ctx *gin.Context) ([]model.User, Pagination, error) {
-	var users []model.User
-	db := mysql.DB.GetDb()
-	pagination := GetPagination(ctx)
-
-	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
-	db.Model(&users).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("create_at desc").Find(&users)
-	if err := db.Error; err != nil {
-		return nil, Pagination{}, nil
-	}
-
-	return users, pagination, nil
-}
-
-// QueryFdBack 返回反馈列表和分页信息
-func QueryFdBack(ctx *gin.Context) ([]model.Feedback, Pagination, error) {
-	var fdBack []model.Feedback
-	db := mysql.DB.GetDb()
-	pagination := GetPagination(ctx)
-
-	offsetVal := (pagination.PageNum - 1) * pagination.PageSize
-	db.Model(&fdBack).Count(&pagination.Total).Limit(pagination.PageSize).Offset(offsetVal).Order("create_at desc").Find(&fdBack)
-	if err := db.Error; err != nil {
-		return nil, Pagination{}, nil
-	}
-
-	return fdBack, pagination, nil
+	return model, pagination, nil
 }
 
 type Pagination struct {
@@ -70,7 +36,6 @@ type Pagination struct {
 func GetPagination(ctx *gin.Context) Pagination {
 	pagination := Pagination{}
 	if err := ctx.BindJSON(&pagination); err != nil {
-		// 返回默认值
 		pagination.PageNum = 1
 		pagination.PageSize = 10
 	}

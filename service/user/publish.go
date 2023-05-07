@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
+	mysql "index_Demo/dao/mysql"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
@@ -13,7 +14,7 @@ import (
 )
 
 func PostList(ctx *gin.Context) {
-	queryPosts, pagination, err := services.QueryPosts(ctx)
+	queryPosts, pagination, err := services.Query(ctx, &[]model.Post{}, mysql.DB.GetDb(), "pTime")
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
 		return

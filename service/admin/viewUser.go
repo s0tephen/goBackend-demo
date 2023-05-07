@@ -2,6 +2,8 @@ package admin
 
 import (
 	"github.com/gin-gonic/gin"
+	mysql "index_Demo/dao/mysql"
+	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
 	"index_Demo/utils/services"
 	"net/http"
@@ -14,7 +16,7 @@ func ViewUserList(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 		return
 	}
-	queryUsers, pagination, err := services.QueryUsers(ctx)
+	queryUsers, pagination, err := services.Query(ctx, &[]model.User{}, mysql.DB.GetDb(), "create_at")
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
 		return

@@ -50,6 +50,7 @@ func Router(g *gin.Engine) {
 	}
 
 	root := g.Group("/root")
+
 	{
 		root.GET("/view_user_list", auth.Middleware(), admin.ViewUserList)
 		root.GET("/review_feedback", auth.Middleware(), admin.ReviewFeedback)
