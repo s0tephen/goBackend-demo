@@ -1,4 +1,4 @@
-package serverUtils
+package logUtils
 
 import (
 	"encoding/json"

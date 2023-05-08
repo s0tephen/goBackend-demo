@@ -5,7 +5,6 @@ import (
 	"github.com/o1egl/govatar"
 	"golang.org/x/crypto/bcrypt"
 	"index_Demo/app/request"
-	"index_Demo/dao/redisServer"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"os"
@@ -17,11 +16,6 @@ func UserExist(ctx *gin.Context, username string) bool {
 	u := dal.User
 	user, _ := u.WithContext(ctx).Where(u.Username.Eq(username)).First()
 	return user != nil
-}
-
-// GetCodeFromRedis 判断邮箱是否存在
-func GetCodeFromRedis(email string) (string, error) {
-	return redisServer.Get(email)
 }
 
 // EncryptPassword 加密密码
@@ -42,11 +36,6 @@ func CreateUser(regRequest request.RegRequest, avatar string, hashPassword strin
 		Password: hashPassword,
 		CreateAt: time.Now(),
 	}
-}
-
-// SaveUser 保存用户到数据库
-func SaveUser(user *model.User) error {
-	return dal.User.Create(user)
 }
 
 // UserAvatar 生成用户头像

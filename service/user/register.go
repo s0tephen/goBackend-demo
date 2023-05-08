@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"index_Demo/app/request"
+	"index_Demo/dao/redisServer"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
@@ -13,7 +14,7 @@ import (
 	"time"
 )
 
-type UserJson struct {
+type Json struct {
 	Username string    `json:"username"`
 	CreatAt  time.Time `json:"creat_at"`
 }
@@ -31,7 +32,7 @@ func Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("用户名已存在", nil))
 		return
 	}
-	code, err := services.GetCodeFromRedis(regRequest.Email)
+	code, err := redisServer.Get(regRequest.Email)
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码已过期", err.Error()))
 		return
@@ -40,28 +41,22 @@ func Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码错误", nil))
 		return
 	}
-
 	hashPassword, err := services.EncryptPassword(regRequest.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("密码加密失败", err.Error()))
 		return
 	}
-
 	avatar, err := services.UserAvatar(1, regRequest.Username)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.New("生成头像失败", err.Error()))
+		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
 		return
 	}
-
 	user := services.CreateUser(regRequest, avatar, hashPassword)
-
-	err = services.SaveUser(user)
-	if err != nil {
+	if err = dal.User.Create(user); err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("注册失败-请联系管理员", err.Error()))
 		return
 	}
-
-	userJson := UserJson{
+	userJson := Json{
 		Username: regRequest.Username,
 		CreatAt:  time.Now(),
 	}
@@ -77,15 +72,13 @@ func UpdateUserAvatar(ctx *gin.Context) {
 	}
 	// 删除旧头像
 	oldAvatarPath := "./static/images/" + user.Username + "/avatar/" + user.Username + ".png"
-	err = os.Remove(oldAvatarPath)
-	if err != nil && !os.IsNotExist(err) {
+	if err = os.Remove(oldAvatarPath); err != nil && !os.IsNotExist(err) {
 		ctx.JSON(http.StatusInternalServerError, response.New("系统内部出错", err.Error()))
 		return
 	}
 	// 保存新头像
-	avatarPath := "./static/images/" + user.Username + "/avatar/" + user.Username + ".png"
-	err = ctx.SaveUploadedFile(file, avatarPath)
-	if err != nil {
+	avatarPath := "./static/images/" + user.Username + "/avatar/" + user.Username + `.png`
+	if err = ctx.SaveUploadedFile(file, avatarPath); err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.New("无法获取头像文件", err.Error()))
 		return
 	}

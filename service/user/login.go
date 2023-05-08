@@ -11,7 +11,7 @@ import (
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
-	"index_Demo/utils/serverUtils"
+	"index_Demo/utils/logUtils"
 	"index_Demo/utils/text"
 	"index_Demo/utils/validateUtils"
 	"net/http"
@@ -21,18 +21,18 @@ import (
 // Login 用户登录
 func Login(ctx *gin.Context) {
 	loginReq := request.LoginRequest{}
-	loginIp := serverUtils.GetRealIP(ctx)
-	if err := ctx.ShouldBindJSON(&loginReq); err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
+	loginIp := logUtils.GetRealIP(ctx)
+	err := ctx.ShouldBindJSON(&loginReq)
+	message, hasErr := validateUtils.ReturnValidateMessage(&loginReq, err)
+	if hasErr {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(message, nil))
 		return
 	}
-
-	userM, tokenM, message, err := serverUtils.AuthenticateUser(ctx, &loginReq)
+	userM, tokenM, message, err := logUtils.AuthenticateUser(ctx, &loginReq)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, response.New(message, err.Error()))
 		return
 	}
-
 	ctx.JSON(http.StatusOK, response.New("登陆成功", map[string]interface{}{
 		"loginIp":   loginIp,
 		"loginTime": time.Now(),
@@ -46,7 +46,7 @@ func Login(ctx *gin.Context) {
 func Login4(ctx *gin.Context) {
 	loginReq := request.LoginRequest{}
 	err := ctx.ShouldBindJSON(&loginReq)
-	loginIp := serverUtils.GetRealIP(ctx)
+	loginIp := logUtils.GetRealIP(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("绑定数据失败", err))
 		return
