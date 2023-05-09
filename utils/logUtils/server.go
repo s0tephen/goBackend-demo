@@ -44,10 +44,12 @@ func AuthenticateUser(ctx *gin.Context, loginReq *request.LoginRequest) (*model.
 	}
 
 	loginIp := GetRealIP(ctx)
+	Time := time.Now()
 	tokenM := &model.LoginSession{
-		Token:   text.GetUUID(),
-		UID:     userM.UID,
-		LoginIP: &loginIp,
+		Token:     text.GetUUID(),
+		LoginTime: &Time,
+		UID:       userM.UID,
+		LoginIP:   &loginIp,
 	}
 
 	loginSession := dal.LoginSession

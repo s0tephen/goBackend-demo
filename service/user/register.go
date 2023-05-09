@@ -43,7 +43,7 @@ func Register(ctx *gin.Context) {
 	}
 	hashPassword, err := services.EncryptPassword(regRequest.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.New("密码加密失败", err.Error()))
+		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
 		return
 	}
 	avatar, err := services.UserAvatar(1, regRequest.Username)

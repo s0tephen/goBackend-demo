@@ -15,41 +15,48 @@ import (
 	"net/http"
 )
 
-func Router(g *gin.Engine) {
+func Router(router *gin.Engine) {
 	docs.SwaggerInfo.BasePath = "/"
-	g.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	g.GET("/wallpaper", bing_wallpaper.Wallpaper)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/wallpaper", bing_wallpaper.Wallpaper)
 
-	g.NoMethod(func(ctx *gin.Context) {
+	router.NoMethod(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusMethodNotAllowed, response.New("Method not allowed", nil))
 	})
-	g.NoRoute(func(ctx *gin.Context) {
+	router.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, response.New("404 Not found", nil))
 	})
-	g.Use(middleware.Cors())
-	g.Use(middleware.ErrorHandler())
-	g.Use(middleware.DeviceType())
+	router.Use(middleware.Cors())
+	router.Use(middleware.ErrorHandler())
+	router.Use(middleware.DeviceType())
 
-	g.GET("/client", middleware.HandleDeviceType)
+	router.GET("/client", middleware.HandleDeviceType)
+	router.GET("/post_list", user.PostList)
+	router.GET("/post", user.PostDetail)
 
-	g.GET("/post_list", user.PostList)
-	g.GET("/post", user.PostDetail)
+	apiRouter := router.Group("/api")
 
-	users := g.Group("/user")
+	Index := apiRouter.Group("/")
 	{
-		users.POST("/reg_email", user.RegEmailCode)
-		users.POST("/register", user.Register)
-		users.POST("/login", user.Login)
-		users.POST("/update_user_avatar", auth.Middleware(), user.UpdateUserAvatar)
-		users.POST("/message", auth.Middleware(), user.Message)
-		users.POST("/feedback", auth.Middleware(), user.FeedBack)
-		users.POST("/logout", auth.Middleware(), user.Logout)
+		Index.POST("/reg_email", user.RegEmailCode)
+		Index.POST("/register", user.Register)
+	}
+	{
+		auths := apiRouter.Group("/auth")
+		{
+			auths.POST("/login", user.Login)
+			auths.POST("/update_user_avatar", auth.Middleware(), user.UpdateUserAvatar)
+			auths.POST("/message", auth.Middleware(), user.Message)
+			auths.POST("/feedback", auth.Middleware(), user.FeedBack)
+			auths.POST("/logout", auth.Middleware(), user.Logout)
 
-		users.POST("/publish", auth.Middleware(), user.PublishPost)
-		users.POST("/upload_file", auth.Middleware(), file_services.UploadFile)
+			auths.POST("/publish", auth.Middleware(), user.PublishPost)
+			auths.POST("/upload_file", auth.Middleware(), file_services.UploadFile)
+		}
+
 	}
 
-	root := g.Group("/root")
+	root := router.Group("/admin")
 
 	{
 		root.GET("/view_user_list", auth.Middleware(), admin.ViewUserList)

@@ -45,7 +45,7 @@ type loginSession struct {
 	ID        field.Int32  // token_Id
 	Token     field.String // 令牌
 	UID       field.Int32  // 用户ID
-	LoginTime field.Time   // 登陆时间
+	LoginTime field.Time
 	LoginIP   field.String // 登陆IP
 
 	fieldMap map[string]field.Expr

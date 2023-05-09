@@ -15,8 +15,8 @@ type LoginSession struct {
 	ID        int32      `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // token_Id
 	Token     string     `gorm:"column:token;not null" json:"token"`                // 令牌
 	UID       int32      `gorm:"column:uid;not null" json:"uid"`                    // 用户ID
-	LoginTime *time.Time `gorm:"column:login_time" json:"login_time"`               // 登陆时间
-	LoginIP   *string    `gorm:"column:login_ip" json:"login_ip"`                   // 登陆IP
+	LoginTime *time.Time `gorm:"column:login_time;default:CURRENT_TIMESTAMP" json:"login_time"`
+	LoginIP   *string    `gorm:"column:login_ip" json:"login_ip"` // 登陆IP
 }
 
 // TableName LoginSession's table name

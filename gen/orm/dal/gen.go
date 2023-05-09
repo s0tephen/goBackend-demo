@@ -16,69 +16,74 @@ import (
 )
 
 var (
-	Q            = new(Query)
-	Category     *category
-	Feedback     *feedback
-	File         *file
-	Like         *like
-	LoginSession *loginSession
-	Message      *message
-	Post         *post
-	User         *user
+	Q              = new(Query)
+	Feedback       *feedback
+	File           *file
+	Label          *label
+	Like           *like
+	LoginSession   *loginSession
+	Message        *message
+	Post           *post
+	RepositoryPool *repositoryPool
+	User           *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
-	Category = &Q.Category
 	Feedback = &Q.Feedback
 	File = &Q.File
+	Label = &Q.Label
 	Like = &Q.Like
 	LoginSession = &Q.LoginSession
 	Message = &Q.Message
 	Post = &Q.Post
+	RepositoryPool = &Q.RepositoryPool
 	User = &Q.User
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:           db,
-		Category:     newCategory(db, opts...),
-		Feedback:     newFeedback(db, opts...),
-		File:         newFile(db, opts...),
-		Like:         newLike(db, opts...),
-		LoginSession: newLoginSession(db, opts...),
-		Message:      newMessage(db, opts...),
-		Post:         newPost(db, opts...),
-		User:         newUser(db, opts...),
+		db:             db,
+		Feedback:       newFeedback(db, opts...),
+		File:           newFile(db, opts...),
+		Label:          newLabel(db, opts...),
+		Like:           newLike(db, opts...),
+		LoginSession:   newLoginSession(db, opts...),
+		Message:        newMessage(db, opts...),
+		Post:           newPost(db, opts...),
+		RepositoryPool: newRepositoryPool(db, opts...),
+		User:           newUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Category     category
-	Feedback     feedback
-	File         file
-	Like         like
-	LoginSession loginSession
-	Message      message
-	Post         post
-	User         user
+	Feedback       feedback
+	File           file
+	Label          label
+	Like           like
+	LoginSession   loginSession
+	Message        message
+	Post           post
+	RepositoryPool repositoryPool
+	User           user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:           db,
-		Category:     q.Category.clone(db),
-		Feedback:     q.Feedback.clone(db),
-		File:         q.File.clone(db),
-		Like:         q.Like.clone(db),
-		LoginSession: q.LoginSession.clone(db),
-		Message:      q.Message.clone(db),
-		Post:         q.Post.clone(db),
-		User:         q.User.clone(db),
+		db:             db,
+		Feedback:       q.Feedback.clone(db),
+		File:           q.File.clone(db),
+		Label:          q.Label.clone(db),
+		Like:           q.Like.clone(db),
+		LoginSession:   q.LoginSession.clone(db),
+		Message:        q.Message.clone(db),
+		Post:           q.Post.clone(db),
+		RepositoryPool: q.RepositoryPool.clone(db),
+		User:           q.User.clone(db),
 	}
 }
 
@@ -92,39 +97,42 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:           db,
-		Category:     q.Category.replaceDB(db),
-		Feedback:     q.Feedback.replaceDB(db),
-		File:         q.File.replaceDB(db),
-		Like:         q.Like.replaceDB(db),
-		LoginSession: q.LoginSession.replaceDB(db),
-		Message:      q.Message.replaceDB(db),
-		Post:         q.Post.replaceDB(db),
-		User:         q.User.replaceDB(db),
+		db:             db,
+		Feedback:       q.Feedback.replaceDB(db),
+		File:           q.File.replaceDB(db),
+		Label:          q.Label.replaceDB(db),
+		Like:           q.Like.replaceDB(db),
+		LoginSession:   q.LoginSession.replaceDB(db),
+		Message:        q.Message.replaceDB(db),
+		Post:           q.Post.replaceDB(db),
+		RepositoryPool: q.RepositoryPool.replaceDB(db),
+		User:           q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Category     *categoryDo
-	Feedback     *feedbackDo
-	File         *fileDo
-	Like         *likeDo
-	LoginSession *loginSessionDo
-	Message      *messageDo
-	Post         *postDo
-	User         *userDo
+	Feedback       *feedbackDo
+	File           *fileDo
+	Label          *labelDo
+	Like           *likeDo
+	LoginSession   *loginSessionDo
+	Message        *messageDo
+	Post           *postDo
+	RepositoryPool *repositoryPoolDo
+	User           *userDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Category:     q.Category.WithContext(ctx),
-		Feedback:     q.Feedback.WithContext(ctx),
-		File:         q.File.WithContext(ctx),
-		Like:         q.Like.WithContext(ctx),
-		LoginSession: q.LoginSession.WithContext(ctx),
-		Message:      q.Message.WithContext(ctx),
-		Post:         q.Post.WithContext(ctx),
-		User:         q.User.WithContext(ctx),
+		Feedback:       q.Feedback.WithContext(ctx),
+		File:           q.File.WithContext(ctx),
+		Label:          q.Label.WithContext(ctx),
+		Like:           q.Like.WithContext(ctx),
+		LoginSession:   q.LoginSession.WithContext(ctx),
+		Message:        q.Message.WithContext(ctx),
+		Post:           q.Post.WithContext(ctx),
+		RepositoryPool: q.RepositoryPool.WithContext(ctx),
+		User:           q.User.WithContext(ctx),
 	}
 }
 
