@@ -3,9 +3,23 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"index_Demo/app/request"
 	"index_Demo/gen/orm/dal"
+	"index_Demo/gen/orm/model"
+	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
+	"net/http"
+	"time"
 )
+
+func IsLogin(ctx *gin.Context) bool {
+	token := ctx.GetHeader("Authorization")
+	_, err := auth.GetUserByToken(token)
+	if token == "" && err != nil {
+		return false
+	}
+	return true
+}
 
 // IsAdmin 管理员权限验证
 func IsAdmin(ctx *gin.Context) bool {
@@ -13,6 +27,32 @@ func IsAdmin(ctx *gin.Context) bool {
 	u := dal.User
 	userInfo, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
 	return userInfo.IsAdmin
+}
+
+// UpdateUser 用户信息更新
+func UpdateUser(ctx *gin.Context, user *model.User, updateRequest request.UpdateRequest) *model.User {
+	u := dal.User
+	if UserExist(ctx, updateRequest.Username) {
+		ctx.JSON(422, response.New("用户名已存在", nil))
+		return nil
+	}
+	hashPassword, err := EncryptPassword(updateRequest.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
+		return nil
+	}
+	upLoadUser := model.User{
+		Username: updateRequest.Username,
+		Password: hashPassword,
+		UploadAt: time.Now(),
+	}
+	_, err = u.WithContext(ctx).Where(u.UID.Eq(user.UID)).Updates(upLoadUser)
+	if err != nil {
+		ctx.JSON(422, response.New("更新失败", nil))
+		return nil
+	}
+	updatedUser, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
+	return updatedUser
 }
 
 // Query 分页查询

@@ -10,6 +10,7 @@ import (
 	"net/http"
 )
 
+// Middleware 获取当前登录用户
 func Middleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		// 获取请求头中的 token
@@ -19,7 +20,7 @@ func Middleware() gin.HandlerFunc {
 			return
 		}
 		// 根据 token 获取用户数据
-		user, err := getUserByToken(token)
+		user, err := GetUserByToken(token)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
 			return
@@ -32,7 +33,7 @@ func Middleware() gin.HandlerFunc {
 	}
 }
 
-func getUserByToken(token string) (*model.User, error) {
+func GetUserByToken(token string) (*model.User, error) {
 	//查看rides中是否存在token 如果存在，返回用户信息 如果不存在，返回错误
 	jsonStr, err := redisServer.Get(fmt.Sprintf("user_token_%s", token))
 	if err != nil {

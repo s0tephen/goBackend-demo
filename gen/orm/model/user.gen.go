@@ -19,6 +19,7 @@ type User struct {
 	IsAdmin  bool      `gorm:"column:isAdmin;not null" json:"isAdmin"`                               // 是否是管理
 	Password string    `gorm:"column:password;not null" json:"password"`                             // 密码
 	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
+	UploadAt time.Time `gorm:"column:upload_at;not null;default:CURRENT_TIMESTAMP" json:"upload_at"` // 更新时间
 }
 
 // TableName User's table name

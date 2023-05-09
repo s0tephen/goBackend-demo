@@ -1,4 +1,4 @@
-package file_services
+package file
 
 import (
 	"crypto/md5"

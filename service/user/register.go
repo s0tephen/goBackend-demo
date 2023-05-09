@@ -17,10 +17,34 @@ import (
 type Json struct {
 	Username string    `json:"username"`
 	CreatAt  time.Time `json:"creat_at"`
+	UploadAt time.Time `json:"upload_at"`
 }
 
-// Register 用户注册
 func Register(ctx *gin.Context) {
+	CreateUser(ctx)
+}
+
+// UpdateUser 用户信息更新
+func UpdateUser(ctx *gin.Context) {
+	currentUser := auth.CurrentUser(ctx)
+	updateRequest := request.UpdateRequest{}
+	err := ctx.BindJSON(&updateRequest)
+	message, hasErr := validateUtils.ReturnValidateMessage(&updateRequest, err)
+	if hasErr && updateRequest.Username != currentUser.Username {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(message, nil))
+		return
+	}
+	updatedUser := services.UpdateUser(ctx, currentUser, updateRequest)
+
+	userJson := Json{
+		Username: updatedUser.Username,
+		UploadAt: updatedUser.CreateAt,
+	}
+	ctx.JSON(http.StatusOK, response.New("更新成功", userJson))
+}
+
+// CreateUser 用户注册
+func CreateUser(ctx *gin.Context) {
 	regRequest := request.RegRequest{}
 	err := ctx.BindJSON(&regRequest)
 	message, hasErr := validateUtils.ReturnValidateMessage(&regRequest, err)
@@ -82,7 +106,6 @@ func UpdateUserAvatar(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, response.New("无法获取头像文件", err.Error()))
 		return
 	}
-
 	//更新数据库中的头像路径 有点多余
 	u := dal.User
 	_, err = u.WithContext(ctx).Where(u.Username.Eq(user.Username)).Update(u.Avatar, avatarPath)

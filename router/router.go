@@ -8,7 +8,7 @@ import (
 	"index_Demo/gen/response"
 	"index_Demo/service/admin"
 	"index_Demo/service/bing_wallpaper"
-	"index_Demo/service/file_services"
+	"index_Demo/service/file"
 	"index_Demo/service/user"
 	"index_Demo/utils/middleware"
 	"index_Demo/utils/middleware/auth"
@@ -36,30 +36,32 @@ func Router(router *gin.Engine) {
 
 	apiRouter := router.Group("/api")
 
+	// index
 	Index := apiRouter.Group("/")
 	{
 		Index.POST("/reg_email", user.RegEmailCode)
 		Index.POST("/register", user.Register)
+		Index.POST("/login", user.Login)
 	}
+
+	// auth
+	auths := apiRouter.Group("/auth")
+	auths.Use(auth.Middleware())
 	{
-		auths := apiRouter.Group("/auth")
-		{
-			auths.POST("/login", user.Login)
-			auths.POST("/update_user_avatar", auth.Middleware(), user.UpdateUserAvatar)
-			auths.POST("/message", auth.Middleware(), user.Message)
-			auths.POST("/feedback", auth.Middleware(), user.FeedBack)
-			auths.POST("/logout", auth.Middleware(), user.Logout)
+		auths.POST("/update_user_avatar", user.UpdateUserAvatar)
+		auths.POST("/message", user.Message)
+		auths.POST("/feedback", user.FeedBack)
+		auths.POST("/logout", user.Logout)
 
-			auths.POST("/publish", auth.Middleware(), user.PublishPost)
-			auths.POST("/upload_file", auth.Middleware(), file_services.UploadFile)
-		}
-
+		auths.POST("/publish", user.PublishPost)
+		auths.POST("/upload_file", file.UploadFile)
 	}
 
+	// admin
 	root := router.Group("/admin")
-
+	root.Use(auth.Middleware())
 	{
-		root.GET("/view_user_list", auth.Middleware(), admin.ViewUserList)
-		root.GET("/review_feedback", auth.Middleware(), admin.ReviewFeedback)
+		root.GET("/view_user_list", admin.ViewUserList)
+		root.GET("/review_feedback", admin.ReviewFeedback)
 	}
 }
