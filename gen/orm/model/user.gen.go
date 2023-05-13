@@ -12,14 +12,13 @@ const TableNameUser = "user"
 
 // User mapped from table <user>
 type User struct {
-	UID      int32     `gorm:"column:uid;primaryKey;autoIncrement:true" json:"uid"`                  // 用户ID
-	Username string    `gorm:"column:username;not null" json:"username"`                             // 用户名
-	Avatar   *string   `gorm:"column:avatar" json:"avatar"`                                          // 用户头像
-	Uemail   *string   `gorm:"column:uemail" json:"uemail"`                                          // 用户邮件
-	IsAdmin  bool      `gorm:"column:isAdmin;not null" json:"isAdmin"`                               // 是否是管理
-	Password string    `gorm:"column:password;not null" json:"password"`                             // 密码
-	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
-	UploadAt time.Time `gorm:"column:upload_at;not null;default:CURRENT_TIMESTAMP" json:"upload_at"` // 更新时间
+	UID      int32     `gorm:"column:uid;primaryKey;autoIncrement:true;comment:用户ID" json:"uid"`
+	Username string    `gorm:"column:username;not null;comment:用户名" json:"username"`
+	Avatar   *string   `gorm:"column:avatar;comment:用户头像" json:"avatar"`
+	Uemail   *string   `gorm:"column:uemail;comment:用户邮件" json:"uemail"`
+	IsAdmin  bool      `gorm:"column:isAdmin;not null;comment:是否是管理" json:"isAdmin"`
+	Password string    `gorm:"column:password;not null;comment:密码" json:"password"`
+	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP;comment:创建时间" json:"create_at"`
 }
 
 // TableName User's table name

@@ -27,7 +27,7 @@ func newFeedback(db *gorm.DB, opts ...gen.DOOption) feedback {
 
 	tableName := _feedback.feedbackDo.TableName()
 	_feedback.ALL = field.NewAsterisk(tableName)
-	_feedback.Fid = field.NewInt32(tableName, "fid")
+	_feedback.Fid = field.NewInt64(tableName, "fid")
 	_feedback.FUser = field.NewString(tableName, "fUser")
 	_feedback.FMsg = field.NewString(tableName, "fMsg")
 	_feedback.FTime = field.NewTime(tableName, "fTime")
@@ -41,7 +41,7 @@ type feedback struct {
 	feedbackDo
 
 	ALL   field.Asterisk
-	Fid   field.Int32  // 反馈ID
+	Fid   field.Int64  // 反馈ID
 	FUser field.String // 反馈者
 	FMsg  field.String // 反馈内容
 	FTime field.Time   // 反馈时间
@@ -61,7 +61,7 @@ func (f feedback) As(alias string) *feedback {
 
 func (f *feedback) updateTableName(table string) *feedback {
 	f.ALL = field.NewAsterisk(table)
-	f.Fid = field.NewInt32(table, "fid")
+	f.Fid = field.NewInt64(table, "fid")
 	f.FUser = field.NewString(table, "fUser")
 	f.FMsg = field.NewString(table, "fMsg")
 	f.FTime = field.NewTime(table, "fTime")

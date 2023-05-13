@@ -12,7 +12,7 @@ const TableNameFile = "file"
 
 // File mapped from table <file>
 type File struct {
-	ID       int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // zhujian
+	ID       int32     `gorm:"column:id;primaryKey;autoIncrement:true;comment:zhujian" json:"id"`
 	Filename string    `gorm:"column:filename;not null" json:"filename"`
 	Md5      string    `gorm:"column:md5;not null" json:"md5"`
 	Uploaded string    `gorm:"column:uploaded;not null" json:"uploaded"`

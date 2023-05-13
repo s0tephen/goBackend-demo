@@ -1,4 +1,4 @@
-package user
+package Indexl
 
 import (
 	"github.com/gin-gonic/gin"

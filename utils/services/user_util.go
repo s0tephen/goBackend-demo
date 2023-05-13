@@ -44,7 +44,7 @@ func UpdateUser(ctx *gin.Context, user *model.User, updateRequest request.Update
 	upLoadUser := model.User{
 		Username: updateRequest.Username,
 		Password: hashPassword,
-		UploadAt: time.Now(),
+		CreateAt: time.Now(),
 	}
 	_, err = u.WithContext(ctx).Where(u.UID.Eq(user.UID)).Updates(upLoadUser)
 	if err != nil {

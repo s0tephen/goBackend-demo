@@ -12,11 +12,11 @@ const TableNameLoginSession = "login_session"
 
 // LoginSession mapped from table <login_session>
 type LoginSession struct {
-	ID        int32      `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"` // token_Id
-	Token     string     `gorm:"column:token;not null" json:"token"`                // 令牌
-	UID       int32      `gorm:"column:uid;not null" json:"uid"`                    // 用户ID
-	LoginTime *time.Time `gorm:"column:login_time;default:CURRENT_TIMESTAMP" json:"login_time"`
-	LoginIP   *string    `gorm:"column:login_ip" json:"login_ip"` // 登陆IP
+	ID        int32      `gorm:"column:id;primaryKey;autoIncrement:true;comment:token_Id" json:"id"`
+	Token     string     `gorm:"column:token;not null;comment:令牌" json:"token"`
+	UID       int32      `gorm:"column:uid;not null;comment:用户ID" json:"uid"`
+	LoginTime *time.Time `gorm:"column:login_time;comment:登陆时间" json:"login_time"`
+	LoginIP   *string    `gorm:"column:login_ip;comment:登陆IP" json:"login_ip"`
 }
 
 // TableName LoginSession's table name

@@ -12,10 +12,10 @@ const TableNameMessage = "message"
 
 // Message mapped from table <message>
 type Message struct {
-	Mid      int32     `gorm:"column:mid;primaryKey;autoIncrement:true" json:"mid"`                  // 消息ID
-	Uname    *string   `gorm:"column:uname" json:"uname"`                                            // 用户名字
-	Content  *string   `gorm:"column:content" json:"content"`                                        // 消息内容
-	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP" json:"create_at"` // 创建时间
+	Mid      int32     `gorm:"column:mid;primaryKey;autoIncrement:true;comment:消息ID" json:"mid"`
+	Uname    *string   `gorm:"column:uname;comment:用户名字" json:"uname"`
+	Content  *string   `gorm:"column:content;comment:消息内容" json:"content"`
+	CreateAt time.Time `gorm:"column:create_at;not null;default:CURRENT_TIMESTAMP;comment:创建时间" json:"create_at"`
 }
 
 // TableName Message's table name

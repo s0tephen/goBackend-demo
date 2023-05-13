@@ -6,10 +6,12 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"index_Demo/docs"
 	"index_Demo/gen/response"
+	"index_Demo/service/Indexl"
 	"index_Demo/service/admin"
 	"index_Demo/service/bing_wallpaper"
 	"index_Demo/service/file"
 	"index_Demo/service/user"
+	"index_Demo/service/user/updates"
 	"index_Demo/utils/middleware"
 	"index_Demo/utils/middleware/auth"
 	"net/http"
@@ -23,9 +25,9 @@ func Router(router *gin.Engine) {
 	router.NoMethod(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusMethodNotAllowed, response.New("Method not allowed", nil))
 	})
-	router.NoRoute(func(ctx *gin.Context) {
-		ctx.JSON(http.StatusNotFound, response.New("404 Not found", nil))
-	})
+	//router.NoRoute(func(ctx *gin.Context) {
+	//	ctx.JSON(http.StatusNotFound, response.New("404 Not found", nil))
+	//})
 	router.Use(middleware.Cors())
 	router.Use(middleware.ErrorHandler())
 	router.Use(middleware.DeviceType())
@@ -39,16 +41,17 @@ func Router(router *gin.Engine) {
 	// index
 	Index := apiRouter.Group("/")
 	{
-		Index.POST("/reg_email", user.RegEmailCode)
-		Index.POST("/register", user.Register)
-		Index.POST("/login", user.Login)
+		Index.POST("/reg_email", Indexl.RegEmailCode)
+		Index.POST("/register", Indexl.Register)
+		Index.POST("/login", Indexl.Login)
 	}
 
 	// auth
 	auths := apiRouter.Group("/auth")
 	auths.Use(auth.Middleware())
 	{
-		auths.POST("/update_user_avatar", user.UpdateUserAvatar)
+		auths.POST("/update", updates.UpdateUserInfo)
+		auths.POST("/update_avatar", updates.UpdateUserAvatar)
 		auths.POST("/message", user.Message)
 		auths.POST("/feedback", user.FeedBack)
 		auths.POST("/logout", user.Logout)

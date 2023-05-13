@@ -1,9 +1,8 @@
-package user
+package updates
 
 import (
 	"github.com/gin-gonic/gin"
 	"index_Demo/app/request"
-	"index_Demo/dao/redisServer"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
@@ -11,21 +10,10 @@ import (
 	"index_Demo/utils/validateUtils"
 	"net/http"
 	"os"
-	"time"
 )
 
-type Json struct {
-	Username string    `json:"username"`
-	CreatAt  time.Time `json:"creat_at"`
-	UploadAt time.Time `json:"upload_at"`
-}
-
-func Register(ctx *gin.Context) {
-	CreateUser(ctx)
-}
-
-// UpdateUser 用户信息更新
-func UpdateUser(ctx *gin.Context) {
+// UpdateUserInfo 更新用户账号和密码
+func UpdateUserInfo(ctx *gin.Context) {
 	currentUser := auth.CurrentUser(ctx)
 	updateRequest := request.UpdateRequest{}
 	err := ctx.BindJSON(&updateRequest)
@@ -36,55 +24,11 @@ func UpdateUser(ctx *gin.Context) {
 	}
 	updatedUser := services.UpdateUser(ctx, currentUser, updateRequest)
 
-	userJson := Json{
+	userJson := request.Json{
 		Username: updatedUser.Username,
 		UploadAt: updatedUser.CreateAt,
 	}
 	ctx.JSON(http.StatusOK, response.New("更新成功", userJson))
-}
-
-// CreateUser 用户注册
-func CreateUser(ctx *gin.Context) {
-	regRequest := request.RegRequest{}
-	err := ctx.BindJSON(&regRequest)
-	message, hasErr := validateUtils.ReturnValidateMessage(&regRequest, err)
-	if hasErr {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New(message, nil))
-		return
-	}
-	if services.UserExist(ctx, regRequest.Username) {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("用户名已存在", nil))
-		return
-	}
-	code, err := redisServer.Get(regRequest.Email)
-	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码已过期", err.Error()))
-		return
-	}
-	if regRequest.EmailCode != code {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码错误", nil))
-		return
-	}
-	hashPassword, err := services.EncryptPassword(regRequest.Password)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
-		return
-	}
-	avatar, err := services.UserAvatar(1, regRequest.Username)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
-		return
-	}
-	user := services.CreateUser(regRequest, avatar, hashPassword)
-	if err = dal.User.Create(user); err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New("注册失败-请联系管理员", err.Error()))
-		return
-	}
-	userJson := Json{
-		Username: regRequest.Username,
-		CreatAt:  time.Now(),
-	}
-	ctx.JSON(http.StatusOK, response.New("注册成功", userJson))
 }
 
 func UpdateUserAvatar(ctx *gin.Context) {

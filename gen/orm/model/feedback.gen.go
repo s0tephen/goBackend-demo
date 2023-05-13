@@ -12,10 +12,10 @@ const TableNameFeedback = "feedback"
 
 // Feedback mapped from table <feedback>
 type Feedback struct {
-	Fid   int32     `gorm:"column:fid;primaryKey;autoIncrement:true" json:"fid"`          // 反馈ID
-	FUser string    `gorm:"column:fUser;not null" json:"fUser"`                           // 反馈者
-	FMsg  string    `gorm:"column:fMsg;not null" json:"fMsg"`                             // 反馈内容
-	FTime time.Time `gorm:"column:fTime;not null;default:CURRENT_TIMESTAMP" json:"fTime"` // 反馈时间
+	Fid   int64     `gorm:"column:fid;primaryKey;autoIncrement:true;comment:反馈ID" json:"fid"`
+	FUser string    `gorm:"column:fUser;not null;comment:反馈者" json:"fUser"`
+	FMsg  string    `gorm:"column:fMsg;not null;comment:反馈内容" json:"fMsg"`
+	FTime time.Time `gorm:"column:fTime;not null;default:CURRENT_TIMESTAMP;comment:反馈时间" json:"fTime"`
 }
 
 // TableName Feedback's table name

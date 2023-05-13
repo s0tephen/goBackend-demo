@@ -12,13 +12,13 @@ const TableNamePost = "post"
 
 // Post mapped from table <post>
 type Post struct {
-	PID      int32     `gorm:"column:pId;primaryKey;autoIncrement:true" json:"pId"` // 帖子id
-	Username *string   `gorm:"column:username" json:"username"`                     // 发布者
-	PTitle   string    `gorm:"column:pTitle;not null" json:"pTitle"`                // 帖子标题
-	PCenter  string    `gorm:"column:pCenter;not null" json:"pCenter"`              // 帖子内容
-	PImg     string    `gorm:"column:pImg;not null" json:"pImg"`                    // 帖子图片
-	PLabel   string    `gorm:"column:pLabel;not null" json:"pLabel"`                // 帖子标签
-	PTime    time.Time `gorm:"column:pTime;not null" json:"pTime"`                  // 发布时间
+	PID      int32     `gorm:"column:pId;primaryKey;autoIncrement:true;comment:帖子id" json:"pId"`
+	Username *string   `gorm:"column:username;comment:发布者" json:"username"`
+	PTitle   string    `gorm:"column:pTitle;not null;comment:帖子标题" json:"pTitle"`
+	PCenter  string    `gorm:"column:pCenter;not null;comment:帖子内容" json:"pCenter"`
+	PImg     string    `gorm:"column:pImg;not null;comment:帖子图片" json:"pImg"`
+	PLabel   string    `gorm:"column:pLabel;not null;comment:帖子标签" json:"pLabel"`
+	PTime    time.Time `gorm:"column:pTime;not null;comment:发布时间" json:"pTime"`
 }
 
 // TableName Post's table name
