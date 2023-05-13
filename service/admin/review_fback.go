@@ -27,5 +27,4 @@ func ReviewFeedback(ctx *gin.Context) {
 		"pageNum":  pagination.PageNum,
 		"pageSize": pagination.PageSize,
 	}))
-
 }

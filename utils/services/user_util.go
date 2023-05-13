@@ -9,6 +9,7 @@ import (
 	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -19,6 +20,24 @@ func IsLogin(ctx *gin.Context) bool {
 		return false
 	}
 	return true
+}
+
+// EditUser 修改用户信息
+func EditUser(ctx *gin.Context, userID string, userName string, password string) (*model.User, error) {
+	u := dal.User
+	uID, _ := strconv.Atoi(userID)
+	Info, err := u.WithContext(ctx).Where(u.UID.Eq(int32(uID))).First()
+	if err != nil {
+		return &model.User{}, err
+	}
+	Info.Username = userName
+	pwd, _ := EncryptPassword(password)
+	Info.Password = pwd
+	_, err = u.WithContext(ctx).Where(u.UID.Eq(int32(uID))).Updates(Info)
+	if err != nil {
+		return &model.User{}, err
+	}
+	return Info, nil
 }
 
 // IsAdmin 管理员权限验证
