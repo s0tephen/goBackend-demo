@@ -9,26 +9,6 @@ import (
 	"net/http"
 )
 
-// ViewUserList 查看用户列表
-func ViewUserLists(ctx *gin.Context) {
-	if !services.IsAdmin(ctx) {
-		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
-		return
-	}
-	queryUsers, pagination, err := services.Query(ctx, &[]model.User{}, mysql.DB.GetDb(), "create_at")
-	if err != nil {
-		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
-		return
-	}
-	ctx.JSON(http.StatusOK, response.New("查询成功", gin.H{
-		"list":     queryUsers,
-		"total":    pagination.Total,
-		"pages":    pagination.Total / int64(pagination.PageSize),
-		"pageNum":  pagination.PageNum,
-		"pageSize": pagination.PageSize,
-	}))
-}
-
 type EditUserInfo struct {
 	UserID   string `json:"userID"`
 	UserName string `json:"userName"`
@@ -69,4 +49,38 @@ func ViewUserList(ctx *gin.Context) {
 			"pageSize": pagination.PageSize,
 		}))
 	}
+}
+
+func DeleteUser(ctx *gin.Context) {
+	if !services.IsAdmin(ctx) {
+		ctx.JSON(http.StatusUnauthorized, response.New("未授权", nil))
+		return
+	}
+	userID := ctx.Query("Uid")
+	info, err := services.DeleteUser(ctx, userID)
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
+		return
+	}
+	ctx.JSON(http.StatusOK, response.New("删除成功", info))
+}
+
+// ViewUserList 查看用户列表
+func ViewUserLists(ctx *gin.Context) {
+	if !services.IsAdmin(ctx) {
+		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))
+		return
+	}
+	queryUsers, pagination, err := services.Query(ctx, &[]model.User{}, mysql.DB.GetDb(), "create_at")
+	if err != nil {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(err.Error(), nil))
+		return
+	}
+	ctx.JSON(http.StatusOK, response.New("查询成功", gin.H{
+		"list":     queryUsers,
+		"total":    pagination.Total,
+		"pages":    pagination.Total / int64(pagination.PageSize),
+		"pageNum":  pagination.PageNum,
+		"pageSize": pagination.PageSize,
+	}))
 }

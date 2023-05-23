@@ -1,4 +1,4 @@
-package Indexl
+package Indexs
 
 import (
 	"github.com/gin-gonic/gin"

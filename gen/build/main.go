@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const sql = "root:mysql_WWiwYA@tcp(110.41.128.19:3306)/pandemo?charset=utf8&parseTime=True&loc=Local"
+const sql = "root:rK2KLAnejjLPZzHs@tcp(110.41.128.19:3306)/pandemo?charset=utf8&parseTime=True&loc=Local"
 
 func main() {
 	db, err := gorm.Open(mysql.Open(sql))

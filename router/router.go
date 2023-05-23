@@ -6,7 +6,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"index_Demo/docs"
 	"index_Demo/gen/response"
-	"index_Demo/service/Indexl"
+	"index_Demo/service/Indexs"
 	"index_Demo/service/admin"
 	"index_Demo/service/bing_wallpaper"
 	"index_Demo/service/file"
@@ -41,9 +41,13 @@ func Router(router *gin.Engine) {
 	// index
 	Index := apiRouter.Group("/")
 	{
-		Index.POST("/reg_email", Indexl.RegEmailCode)
-		Index.POST("/register", Indexl.Register)
-		Index.POST("/login", Indexl.Login)
+		Index.POST("/reg_email", Indexs.RegEmailCode)
+		Index.POST("/register", Indexs.Register)
+		Index.POST("/login", Indexs.Login)
+
+		//忘记密码
+		Index.POST("/forget_email", Indexs.ForgetCode)
+		Index.POST("/forget", Indexs.ForgetPwd)
 	}
 
 	// auth
@@ -55,7 +59,6 @@ func Router(router *gin.Engine) {
 		auths.POST("/message", user.Message)
 		auths.POST("/feedback", user.FeedBack)
 		auths.POST("/logout", user.Logout)
-
 		auths.POST("/publish", user.PublishPost)
 		auths.POST("/upload_file", file.UploadFile)
 	}
@@ -64,7 +67,9 @@ func Router(router *gin.Engine) {
 	root := router.Group("/admin")
 	root.Use(auth.Middleware())
 	{
-		root.GET("/view_user_list", admin.ViewUserList)
+		root.GET("/userlist", admin.ViewUserList)
+		root.GET("/delete_user", admin.DeleteUser)
+
 		root.GET("/review_feedback", admin.ReviewFeedback)
 	}
 }

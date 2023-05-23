@@ -3,26 +3,36 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"index_Demo/app/request"
 	"index_Demo/gen/orm/dal"
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
 	"index_Demo/utils/middleware/auth"
-	"net/http"
 	"strconv"
-	"time"
 )
 
-func IsLogin(ctx *gin.Context) bool {
-	token := ctx.GetHeader("Authorization")
-	_, err := auth.GetUserByToken(token)
-	if token == "" && err != nil {
-		return false
-	}
-	return true
+// IsAdmin Admin管理员权限验证
+func IsAdmin(ctx *gin.Context) bool {
+	user := auth.CurrentUser(ctx)
+	u := dal.User
+	userInfo, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
+	return userInfo.IsAdmin
 }
 
-// EditUser 修改用户信息
+// DeleteUser Admin删除用户
+func DeleteUser(ctx *gin.Context, userID string) (interface{}, error) {
+	u := dal.User
+	uID, _ := strconv.Atoi(userID)
+	DeleteInfo, err := u.WithContext(ctx).Where(u.UID.Eq(int32(uID))).Delete()
+	if err != nil {
+		return response.New("删除失败", err.Error()), nil
+	}
+	if DeleteInfo.Error != nil && DeleteInfo.RowsAffected == 0 {
+		return response.New("删除失败", DeleteInfo.Error.Error()), nil
+	}
+	return response.New("删除成功", DeleteInfo.RowsAffected), nil
+}
+
+// EditUser Admin修改用户信息
 func EditUser(ctx *gin.Context, userID string, userName string, password string) (*model.User, error) {
 	u := dal.User
 	uID, _ := strconv.Atoi(userID)
@@ -38,40 +48,6 @@ func EditUser(ctx *gin.Context, userID string, userName string, password string)
 		return &model.User{}, err
 	}
 	return Info, nil
-}
-
-// IsAdmin 管理员权限验证
-func IsAdmin(ctx *gin.Context) bool {
-	user := auth.CurrentUser(ctx)
-	u := dal.User
-	userInfo, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
-	return userInfo.IsAdmin
-}
-
-// UpdateUser 用户信息更新
-func UpdateUser(ctx *gin.Context, user *model.User, updateRequest request.UpdateRequest) *model.User {
-	u := dal.User
-	if UserExist(ctx, updateRequest.Username) {
-		ctx.JSON(422, response.New("用户名已存在", nil))
-		return nil
-	}
-	hashPassword, err := EncryptPassword(updateRequest.Password)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, response.New("注册失败-请联系管理员", err.Error()))
-		return nil
-	}
-	upLoadUser := model.User{
-		Username: updateRequest.Username,
-		Password: hashPassword,
-		CreateAt: time.Now(),
-	}
-	_, err = u.WithContext(ctx).Where(u.UID.Eq(user.UID)).Updates(upLoadUser)
-	if err != nil {
-		ctx.JSON(422, response.New("更新失败", nil))
-		return nil
-	}
-	updatedUser, _ := u.WithContext(ctx).Where(u.UID.Eq(user.UID)).First()
-	return updatedUser
 }
 
 // Query 分页查询

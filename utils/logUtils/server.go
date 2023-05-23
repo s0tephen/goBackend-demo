@@ -27,14 +27,13 @@ func AuthenticateUser(ctx *gin.Context, loginReq *request.LoginRequest) (*model.
 	if hasErr {
 		return nil, nil, message, errors.New("无效的登陆请求")
 	}
-
-	userM, err := u.WithContext(ctx).Where(u.Username.Eq(loginReq.Username)).First()
+	userM, err := u.WithContext(ctx).Where(u.Username.Eq(loginReq.Username)).Or(u.Uemail.Eq(loginReq.Username)).First()
 	if userM == nil {
 		return nil, nil, "用户不存在", errors.New("用户不存在")
 	}
 
 	// 对比数据库中的密码和请求提供的密码
-	sqlUser, err := u.WithContext(ctx).Where(u.Username.Eq(loginReq.Username)).Select(u.UID, u.Username, u.Password).First()
+	sqlUser, err := u.WithContext(ctx).Where(u.Username.Eq(loginReq.Username)).Or(u.Uemail.Eq(loginReq.Username)).Select(u.UID, u.Username, u.Password).First()
 	if err != nil {
 		return nil, nil, "查询用户失败", err
 	}

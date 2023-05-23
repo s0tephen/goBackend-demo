@@ -1,4 +1,4 @@
-package Indexl
+package Indexs
 
 import (
 	"encoding/json"
@@ -12,6 +12,7 @@ import (
 	"index_Demo/gen/orm/model"
 	"index_Demo/gen/response"
 	"index_Demo/utils/logUtils"
+	"index_Demo/utils/services"
 	"index_Demo/utils/text"
 	"index_Demo/utils/validateUtils"
 	"net/http"
@@ -37,10 +38,50 @@ func Login(ctx *gin.Context) {
 		"loginIp":   loginIp,
 		"loginTime": time.Now(),
 		"user": gin.H{
+			"isAdmin":  userM.IsAdmin,
 			"username": userM.Username,
 			"token":    tokenM.Token,
 		},
 	}))
+}
+
+// ForgetPwd 找回密码
+func ForgetPwd(ctx *gin.Context) {
+	forgetPwdReq := request.ForgetPwdRequest{}
+	err := ctx.ShouldBindJSON(&forgetPwdReq)
+	message, hasErr := validateUtils.ReturnValidateMessage(&forgetPwdReq, err)
+	if hasErr {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New(message, nil))
+		return
+	}
+	u := dal.User
+	userM, err := u.WithContext(ctx).Where(u.Username.Eq(forgetPwdReq.Email)).First()
+	if userM == nil {
+		ctx.JSON(http.StatusBadRequest, response.New("邮箱不存在", err.Error()))
+		return
+	}
+	//验证邮箱验证码
+	code, err := redisServer.Get(forgetPwdReq.Email)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.New("验证码已过期", err.Error()))
+		return
+	}
+	if forgetPwdReq.EmailCode != code {
+		ctx.JSON(http.StatusUnprocessableEntity, response.New("验证码错误", nil))
+		return
+	}
+	//修改密码
+	hashPassword, err := services.EncryptPassword(forgetPwdReq.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.New("修改失败-请联系管理员", err.Error()))
+		return
+	}
+	_, err = u.WithContext(ctx).Where(u.Uemail.Eq(forgetPwdReq.Email)).Update(u.Password, hashPassword)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, response.New("修改密码失败", err.Error()))
+		return
+	}
+	ctx.JSON(http.StatusOK, response.New("修改密码成功", nil))
 }
 
 func Login4(ctx *gin.Context) {
