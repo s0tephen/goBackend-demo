@@ -45,7 +45,7 @@ func Router(router *gin.Engine) {
 		Index.POST("/register", Indexs.Register)
 		Index.POST("/login", Indexs.Login)
 
-		//忘记密码
+		//Forget
 		Index.POST("/forget_email", Indexs.ForgetCode)
 		Index.POST("/forget", Indexs.ForgetPwd)
 	}

@@ -14,3 +14,10 @@ var (
 	Redis       *redis.Client
 	Engine      *gin.Engine
 )
+
+func Test() {
+	DB.Where("")
+	Engine = gin.New()
+	Engine.POST("")
+	Logger.Error("")
+}
