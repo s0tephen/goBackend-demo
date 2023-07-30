@@ -27,21 +27,25 @@ func Init() {
 
 }
 
+// Set 设置值 expire 过期时间
 func Set(key string, value interface{}, expire time.Duration) error {
 	set := global.Redis.Set(RedisContext, key, value, expire)
 	return set.Err()
 }
 
+// Get 获取值
 func Get(key string) (string, error) {
 	get := global.Redis.Get(RedisContext, key)
 	return get.Val(), get.Err()
 }
 
+// GetSet 获取集合
 func GetSet(key string) ([]string, error) {
 	set := global.Redis.SMembers(RedisContext, key)
 	return set.Val(), set.Err()
 }
 
+// PutSet 添加到集合
 func PutSet(key string, members []string) error {
 	arr := make([]interface{}, 0)
 	for _, member := range members {
@@ -51,6 +55,7 @@ func PutSet(key string, members []string) error {
 	return setAdd.Err()
 }
 
+// InSet 判断是否在集合中
 func InSet(key, val string) (bool, error) {
 	set := global.Redis.SIsMember(RedisContext, key, val)
 	return set.Val(), set.Err()

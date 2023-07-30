@@ -33,17 +33,11 @@ func main() {
 	}
 	//连接redis
 	redisServer.Init()
-
 	//初始化Gin
 	global.Engine = gin.New()
 	//加载路由
 	router.Router(global.Engine)
-	//http://patorjk.com/software/taag/#p=display&h=0&f=Ogre&t=stephen
-	//logs.Info("\n      _                 _                  \n ___ | |_   ___  _ __  | |__    ___  _ __  \n/ __|| __| / _ \\| '_ \\ | '_ \\  / _ \\| '_ \\ \n\\__ \\| |_ |  __/| |_) || | | ||  __/| | | |\n|___/ \\__| \\___|| .__/ |_| |_| \\___||_| |_|\n                |_|                        \n")
+	//http://patorjk.com/software/taag/#p=display&h=0&f=Ogre&t=demo
 	logs.Info("\n                 ___               _                      _            ___                         \n  __ _   ___    / __\\  __ _   ___ | | __  ___  _ __    __| |          /   \\  ___  _ __ ___    ___  \n / _` | / _ \\  /__\\// / _` | / __|| |/ / / _ \\| '_ \\  / _` | _____   / /\\ / / _ \\| '_ ` _ \\  / _ \\ \n| (_| || (_) |/ \\/  \\| (_| || (__ |   < |  __/| | | || (_| ||_____| / /_// |  __/| | | | | || (_) |\n \\__, | \\___/ \\_____/ \\__,_| \\___||_|\\_\\ \\___||_| |_| \\__,_|       /___,'   \\___||_| |_| |_| \\___/ \n |___/                                                                                             \n")
-	err = global.Engine.Run(fmt.Sprintf(":%d", viper.GetUint16("server.port")))
-	if err != nil {
-		logs.Err(err.Error())
-	}
-
+	_ = global.Engine.Run(fmt.Sprintf(":%d", viper.GetUint16("server.port")))
 }

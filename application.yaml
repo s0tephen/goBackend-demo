@@ -5,12 +5,12 @@ mysql:
   host: 110.41.128.19
   port: 3306
   user: root
-  password: rK2KLAnejjLPZzHs
+  password: De8WtRfpz3C6XXPE
   db: pandemo
 
 redis:
   addr: 110.41.128.19:6363
-  password: lkasnjkbakbdjjabDbAD
+  password: lkasnjkbakbdjjabDAD
   db: 0
   # 登陆 Token过期时间 单位 小时
   tokenTime: 1

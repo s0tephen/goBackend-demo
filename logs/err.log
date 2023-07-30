@@ -1,2 +1,0 @@
-2023-05-13 02:07:49	[ERR]:	redis.go:25 Redis:dial tcp 110.41.128.19:6379: connect: connection refused
-2023-05-13 02:42:45	[ERR]:	main.go:30 [db connection failed] Database name: pandemo: Error 1045 (28000): Access denied for user 'root'@'119.7.148.2' (using password: YES)
