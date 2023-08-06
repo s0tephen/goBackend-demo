@@ -5,7 +5,7 @@ import (
 	logs "github.com/danbai225/go-logs"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
-	"index_Demo/bootstrap/global"
+	"goBackend-demo/bootstrap/global"
 	"time"
 )
 

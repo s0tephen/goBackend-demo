@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	"index_Demo/gen/orm/model"
+	"goBackend-demo/gen/orm/model"
 )
 
 // CurrentUser 获取当前登录用户

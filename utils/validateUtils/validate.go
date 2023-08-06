@@ -2,7 +2,7 @@ package validateUtils
 
 import (
 	"github.com/go-playground/validator/v10"
-	"index_Demo/bootstrap/global"
+	"goBackend-demo/bootstrap/global"
 	"reflect"
 )
 

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"index_Demo/dao/redisServer"
-	"index_Demo/gen/orm/model"
-	"index_Demo/gen/response"
+	"goBackend-demo/dao/redisServer"
+	"goBackend-demo/gen/orm/model"
+	"goBackend-demo/gen/response"
 	"net/http"
 )
 
@@ -33,6 +33,7 @@ func Middleware() gin.HandlerFunc {
 	}
 }
 
+// GetUserByToken 根据 token 获取用户数据
 func GetUserByToken(token string) (*model.User, error) {
 	//查看rides中是否存在token 如果存在，返回用户信息 如果不存在，返回错误
 	jsonStr, err := redisServer.Get(fmt.Sprintf("user_token_%s", token))

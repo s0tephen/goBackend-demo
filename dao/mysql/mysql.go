@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	"goBackend-demo/gen/orm/dal"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"index_Demo/gen/orm/dal"
 	"time"
 )
 

@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"index_Demo/gen/orm/model"
+	"goBackend-demo/gen/orm/model"
 )
 
 func newMessage(db *gorm.DB, opts ...gen.DOOption) message {

@@ -2,9 +2,9 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/response"
-	"index_Demo/utils/middleware/auth"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/middleware/auth"
 	"net/http"
 )
 

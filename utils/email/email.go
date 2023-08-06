@@ -6,8 +6,10 @@ import (
 	"github.com/spf13/viper"
 	"math/rand"
 	"net/smtp"
+	"regexp"
 )
 
+// SendMail 发送邮件
 func SendMail(ToEmail string) (*string, error) {
 	e := email.NewEmail()
 	mailUserName := viper.GetString("emailCode.seedEmail")    //邮箱账号
@@ -22,6 +24,7 @@ func SendMail(ToEmail string) (*string, error) {
 	e.To = []string{ToEmail}
 	e.Subject = Subject
 	e.HTML = []byte("<p>你好！</p>你的验证码为：<h1>" + code + "</h1>" + "<p>***该验证码5分钟内有效***</p>")
+
 	err := e.SendWithTLS(addr, smtp.PlainAuth("", mailUserName, mailPassword, host),
 		&tls.Config{InsecureSkipVerify: true, ServerName: serverName})
 	if err != nil {
@@ -30,6 +33,7 @@ func SendMail(ToEmail string) (*string, error) {
 	return &code, nil
 }
 
+// RandCode 生成随机验证码
 func RandCode() string {
 	s := "1234567890"
 	code := ""
@@ -37,4 +41,11 @@ func RandCode() string {
 		code += string(s[rand.Intn(len(s))])
 	}
 	return code
+}
+
+// VerifyEmailFormat 验证邮箱格式
+func VerifyEmailFormat(email string) bool {
+	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
+	reg := regexp.MustCompile(pattern)
+	return reg.MatchString(email)
 }

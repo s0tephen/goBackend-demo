@@ -2,12 +2,12 @@ package Indexs
 
 import (
 	"github.com/gin-gonic/gin"
-	"index_Demo/app/request"
-	"index_Demo/dao/redisServer"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/response"
-	"index_Demo/utils/services"
-	"index_Demo/utils/validateUtils"
+	"goBackend-demo/app/request"
+	"goBackend-demo/dao/redisServer"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/services"
+	"goBackend-demo/utils/validateUtils"
 	"net/http"
 	"time"
 )

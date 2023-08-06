@@ -5,11 +5,11 @@ import (
 	logs "github.com/danbai225/go-logs"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"index_Demo/bootstrap/global"
-	"index_Demo/config"
-	mysql "index_Demo/dao/mysql"
-	"index_Demo/dao/redisServer"
-	"index_Demo/router"
+	"goBackend-demo/bootstrap/global"
+	"goBackend-demo/config"
+	mysql "goBackend-demo/dao/mysql"
+	"goBackend-demo/dao/redisServer"
+	"goBackend-demo/router"
 )
 
 func main() {

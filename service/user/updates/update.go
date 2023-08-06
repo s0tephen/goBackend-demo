@@ -2,12 +2,12 @@ package updates
 
 import (
 	"github.com/gin-gonic/gin"
-	"index_Demo/app/request"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/response"
-	"index_Demo/utils/middleware/auth"
-	"index_Demo/utils/services"
-	"index_Demo/utils/validateUtils"
+	"goBackend-demo/app/request"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/middleware/auth"
+	"goBackend-demo/utils/services"
+	"goBackend-demo/utils/validateUtils"
 	"net/http"
 	"os"
 )

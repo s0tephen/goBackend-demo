@@ -2,11 +2,11 @@ package services
 
 import (
 	"github.com/gin-gonic/gin"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/orm/model"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/middleware/auth"
 	"gorm.io/gorm"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/orm/model"
-	"index_Demo/gen/response"
-	"index_Demo/utils/middleware/auth"
 	"strconv"
 )
 

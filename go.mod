@@ -1,4 +1,4 @@
-module index_Demo
+module goBackend-demo
 
 go 1.20
 

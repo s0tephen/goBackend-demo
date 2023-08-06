@@ -2,12 +2,12 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	mysql "index_Demo/dao/mysql"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/orm/model"
-	"index_Demo/gen/response"
-	"index_Demo/utils/middleware/auth"
-	"index_Demo/utils/services"
+	mysql "goBackend-demo/dao/mysql"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/orm/model"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/middleware/auth"
+	"goBackend-demo/utils/services"
 	"net/http"
 	"strconv"
 	"time"

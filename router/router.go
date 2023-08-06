@@ -4,17 +4,18 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"index_Demo/docs"
-	"index_Demo/gen/response"
-	"index_Demo/service/Indexs"
-	"index_Demo/service/admin"
-	"index_Demo/service/bing_wallpaper"
-	"index_Demo/service/file"
-	"index_Demo/service/user"
-	"index_Demo/service/user/updates"
-	"index_Demo/utils/middleware"
-	"index_Demo/utils/middleware/auth"
+	"goBackend-demo/docs"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/service/Indexs"
+	"goBackend-demo/service/admin"
+	"goBackend-demo/service/bing_wallpaper"
+	"goBackend-demo/service/file"
+	"goBackend-demo/service/user"
+	"goBackend-demo/service/user/updates"
+	"goBackend-demo/utils/middleware"
+	"goBackend-demo/utils/middleware/auth"
 	"net/http"
+	"time"
 )
 
 func Router(router *gin.Engine) {
@@ -37,7 +38,8 @@ func Router(router *gin.Engine) {
 	router.GET("/post", user.PostDetail)
 
 	apiRouter := router.Group("/api")
-
+	limitReq := middleware.NewRateLimiter()
+	apiRouter.Use(limitReq.LimitRequest(3, 10*time.Minute))
 	// index
 	Index := apiRouter.Group("/")
 	{

@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"index_Demo/gen/orm/model"
+	"goBackend-demo/gen/orm/model"
 )
 
 func newFile(db *gorm.DB, opts ...gen.DOOption) file {

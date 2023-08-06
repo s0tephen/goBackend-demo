@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"index_Demo/gen/response"
+	"goBackend-demo/gen/response"
 	"log"
 	"net/http"
 	"runtime"
@@ -71,7 +71,7 @@ func DeviceType() gin.HandlerFunc {
 	}
 }
 
-// HandleDeviceType is a handler that returns a string
+// HandleDeviceType 判断设备类型
 func HandleDeviceType(c *gin.Context) {
 	deviceType, exists := c.Get("device_type")
 	if !exists {
