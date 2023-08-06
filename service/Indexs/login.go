@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goBackend-demo/app/request"
+	"goBackend-demo/dao/redisServer"
+	"goBackend-demo/gen/orm/dal"
+	"goBackend-demo/gen/orm/model"
+	"goBackend-demo/gen/response"
+	"goBackend-demo/utils/logUtils"
+	"goBackend-demo/utils/services"
+	"goBackend-demo/utils/text"
+	"goBackend-demo/utils/validateUtils"
 	"golang.org/x/crypto/bcrypt"
 	_ "golang.org/x/crypto/bcrypt"
-	"index_Demo/app/request"
-	"index_Demo/dao/redisServer"
-	"index_Demo/gen/orm/dal"
-	"index_Demo/gen/orm/model"
-	"index_Demo/gen/response"
-	"index_Demo/utils/logUtils"
-	"index_Demo/utils/services"
-	"index_Demo/utils/text"
-	"index_Demo/utils/validateUtils"
 	"net/http"
 	"time"
 )
@@ -36,7 +36,7 @@ func Login(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, response.New("登陆成功", map[string]interface{}{
 		"loginIp":   loginIp,
-		"loginTime": time.Now(),
+		"loginTime": time.Now().Format("2006-01-02 15:04:05"),
 		"user": gin.H{
 			"isAdmin":  userM.IsAdmin,
 			"username": userM.Username,
