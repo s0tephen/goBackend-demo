@@ -23,7 +23,7 @@ func SendMail(ToEmail string) (*string, error) {
 
 	e.To = []string{ToEmail}
 	e.Subject = Subject
-	e.HTML = []byte("<p>你好！</p>你的验证码为：<h1>" + code + "</h1>" + "<p>***该验证码5分钟内有效***</p>")
+	e.HTML = []byte("<p>您好！</p>你的验证码为：<h1>" + code + "</h1>" + "<p>***该验证码5分钟内有效***</p>")
 
 	err := e.SendWithTLS(addr, smtp.PlainAuth("", mailUserName, mailPassword, host),
 		&tls.Config{InsecureSkipVerify: true, ServerName: serverName})

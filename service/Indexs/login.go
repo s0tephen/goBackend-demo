@@ -14,7 +14,6 @@ import (
 	"goBackend-demo/utils/text"
 	"goBackend-demo/utils/validateUtils"
 	"golang.org/x/crypto/bcrypt"
-	_ "golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
 )

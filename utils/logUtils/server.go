@@ -12,12 +12,23 @@ import (
 	"goBackend-demo/utils/text"
 	"goBackend-demo/utils/validateUtils"
 	"golang.org/x/crypto/bcrypt"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
 func GetRealIP(ctx *gin.Context) string {
 	return ctx.ClientIP()
 	//ctx.RemoteIP()
+}
+func GetIp() string {
+	resp, err := http.Get("https://myexternalip.com/raw")
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	content, _ := ioutil.ReadAll(resp.Body)
+	return string(content)
 }
 
 // AuthenticateUser 验证Log

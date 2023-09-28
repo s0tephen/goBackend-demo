@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+// PostList 文章列表
 func PostList(ctx *gin.Context) {
 	queryPosts, pagination, err := services.Query(ctx, &[]model.Post{}, mysql.DB.GetDb(), "pTime")
 	if err != nil {
@@ -66,14 +67,13 @@ func PublishPost(ctx *gin.Context) {
 
 }
 
+// GetPostByID 根据ID获取文章(PostDetail)
 func GetPostByID(ctx *gin.Context, postId string) (*model.Post, error) {
 	p := dal.Post
-
 	id, err := strconv.Atoi(postId)
 	if err != nil {
 		return nil, err
 	}
-
 	post, err := p.WithContext(ctx).Where(p.PID.Eq(int32(id))).First()
 	if err != nil {
 		return nil, err
