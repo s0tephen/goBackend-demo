@@ -15,7 +15,6 @@ import (
 	"goBackend-demo/utils/middleware"
 	"goBackend-demo/utils/middleware/auth"
 	"net/http"
-	"time"
 )
 
 func Router(router *gin.Engine) {
@@ -38,8 +37,8 @@ func Router(router *gin.Engine) {
 	router.GET("/post", user.PostDetail)
 
 	apiRouter := router.Group("/api")
-	limitReq := middleware.NewRateLimiter()
-	apiRouter.Use(limitReq.LimitRequest(3, 10*time.Minute))
+	//limitReq := middleware.NewRateLimiter()
+	//apiRouter.Use(limitReq.LimitRequest(3, 10*time.Minute))
 	// index
 	Index := apiRouter.Group("/")
 	{

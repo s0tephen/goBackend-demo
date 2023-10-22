@@ -3,6 +3,7 @@ package file
 import (
 	"crypto/md5"
 	"fmt"
+	logs "github.com/danbai225/go-logs"
 	"github.com/gin-gonic/gin"
 	"goBackend-demo/gen/orm/dal"
 	"goBackend-demo/gen/orm/model"
@@ -13,6 +14,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"time"
 )
 
@@ -47,7 +49,12 @@ func UploadFile(ctx *gin.Context) {
 		md5Str := sumMd5(data)
 		fileM := &model.File{}
 		_, err = tx.WithContext(ctx).File.Where(tx.File.Md5.Eq(md5Str)).First()
-		fileM.Path = fmt.Sprintf("static/data%c%s", os.PathSeparator, md5Str)
+		// 返回URL 为了方便前端直接使用
+		// Get the file extension from the uploaded file
+		fileExt := filepath.Ext(file.Filename)
+		logs.InfoF("fileExt:%s", fileExt)
+		fileM.Path = fmt.Sprintf("http://localhost:9990/static/data/%s%s", md5Str, fileExt)
+		//fileM.Path = fmt.Sprintf("static/data%c%s", os.PathSeparator, md5Str)
 		makeAll(fileM.Path)
 		if err == nil {
 			err = os.WriteFile(fileM.Path, data, os.ModePerm)

@@ -65,7 +65,7 @@ func DeleteUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response.New("删除成功", info))
 }
 
-// ViewUserList 查看用户列表
+// ViewUserLists 查看用户列表
 func ViewUserLists(ctx *gin.Context) {
 	if !services.IsAdmin(ctx) {
 		ctx.JSON(http.StatusUnauthorized, response.New("Unauthorized", nil))

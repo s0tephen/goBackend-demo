@@ -20,7 +20,6 @@ type ForgetEmail struct {
 
 // RegEmailCode 注册邮箱验证码
 func RegEmailCode(ctx *gin.Context) {
-
 	regEmail := RegEmail{}
 	if err := ctx.BindJSON(&regEmail); err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, response.New("系统出错联系管理员", err))
