@@ -21,6 +21,7 @@ func Router(router *gin.Engine) {
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/wallpaper", bing_wallpaper.Wallpaper)
+	router.Static("/static", "./static")
 
 	router.NoMethod(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusMethodNotAllowed, response.New("Method not allowed", nil))
